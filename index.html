@@ -1,0 +1,2524 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Winter Wonder - ชวนเที่ยว</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Trip Party Styles v3 + Animations
+   ============================================================ */
+:root {
+  --primary:   #7C3AED;
+  --primary-d: #6D28D9;
+  --primary-l: #EDE9FE;
+  --accent:    #F59E0B;
+  --success:   #059669;
+  --danger:    #DC2626;
+  --info:      #2563EB;
+
+  --bg:        #F5F3FF;
+  --bg-card:   #FFFFFF;
+  --bg-section:#F0EBFF;
+  --text:      #1E1B4B;
+  --text-2:    #3730A3;
+  --text-muted:#6B7280;
+  --border:    #DDD6FE;
+
+  --shadow-sm: 0 1px 4px rgba(124,58,237,.08);
+  --shadow:    0 4px 16px rgba(124,58,237,.12);
+  --shadow-lg: 0 8px 32px rgba(124,58,237,.18);
+  --radius:    16px;
+  --radius-sm: 10px;
+  --font:      'Prompt', sans-serif;
+  --ease:      all .22s ease;
+}
+
+[data-theme="dark"] {
+  --bg:        #0F0A1E;
+  --bg-card:   #1A1035;
+  --bg-section:#130D2A;
+  --text:      #EDE9FE;
+  --text-2:    #C4B5FD;
+  --text-muted:#8B7CF6;
+  --border:    #2D1F5E;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.4);
+  --shadow:    0 4px 16px rgba(0,0,0,.35);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.5);
+  --primary-l: #2D1F5E;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;transition:background .3s,color .3s}
+
+/* ─── Navbar ─── */
+#mainNav{
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  box-shadow:var(--shadow-sm);position:sticky;top:0;z-index:1040;
+}
+#mainNav .container{display:flex;align-items:center;gap:10px;padding:12px 1rem}
+.brand{font-size:1.3rem;font-weight:700;color:var(--primary);text-decoration:none;display:flex;align-items:center;gap:6px}
+.brand span{background:var(--primary);color:#fff;border-radius:8px;padding:2px 8px;font-size:.85rem}
+
+.nav-links{display:flex;gap:4px;margin-left:8px}
+.nav-pill{
+  background:transparent;border:none;cursor:pointer;
+  color:var(--text-muted);font-family:var(--font);font-size:.88rem;font-weight:500;
+  padding:6px 14px;border-radius:50px;transition:var(--ease);
+}
+.nav-pill:hover{background:var(--primary-l);color:var(--primary)}
+.nav-pill.active{background:var(--primary);color:#fff}
+
+.btn-icon{
+  width:36px;height:36px;border-radius:50%;border:1px solid var(--border);
+  background:transparent;display:inline-flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text);font-size:1rem;transition:var(--ease);flex-shrink:0;
+}
+.btn-icon:hover{background:var(--primary-l);border-color:var(--primary);color:var(--primary)}
+
+#mobileNav{border-top:1px solid var(--border);background:var(--bg-card);padding:8px 0}
+.mob-nav-btn{
+  display:block;width:100%;text-align:left;background:none;border:none;
+  padding:10px 20px;font-family:var(--font);font-size:.92rem;color:var(--text);cursor:pointer;
+}
+.mob-nav-btn:hover{background:var(--primary-l);color:var(--primary)}
+
+/* ─── Pages ─── */
+.page{display:none}
+.page.active{display:block}
+
+/* ══════════════════════════════════════════
+   ANIMATION 6 — Page fade-up transition
+   (แทนที่ animation เดิมใน .page.active)
+   ══════════════════════════════════════════ */
+@keyframes pageEnter {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0);    }
+}
+.page.active { animation: pageEnter .3s cubic-bezier(.4,0,.2,1) both; }
+
+/* ─── Hero ─── */
+.hero{
+  position:relative;overflow:hidden;
+  min-height:420px;display:flex;align-items:center;
+  background:linear-gradient(135deg,#2D1F5E 0%,#7C3AED 60%,#A855F7 100%);
+}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#0F0A1E 0%,#3B1F8C 60%,#5B21B6 100%)}
+.hero-bg-shapes{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.hero-shape{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.hero-shape.s1{width:300px;height:300px;top:-80px;right:-60px}
+.hero-shape.s2{width:200px;height:200px;bottom:-50px;left:30px}
+.hero-shape.s3{width:150px;height:150px;top:40%;right:20%}
+
+.hero-content{position:relative;z-index:1;text-align:center;padding:60px 0;width:100%}
+.hero-eyebrow{
+  display:inline-block;
+  background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);
+  border:1px solid rgba(255,255,255,.25);border-radius:50px;
+  font-size:.8rem;padding:5px 16px;margin-bottom:14px;backdrop-filter:blur(4px);
+}
+.hero-title{
+  font-size:clamp(1.9rem,5vw,3.2rem);font-weight:700;color:#fff;
+  line-height:1.2;margin-bottom:10px;text-shadow:0 2px 12px rgba(0,0,0,.2);
+}
+.hero-sub{color:rgba(255,255,255,.8);font-size:1rem;margin-bottom:28px}
+
+.cat-pills{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.cat-pill{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.15);color:#fff;
+  border:1px solid rgba(255,255,255,.25);
+  padding:7px 16px;border-radius:50px;font-size:.85rem;
+  cursor:pointer;backdrop-filter:blur(4px);transition:var(--ease);
+  font-family:var(--font);font-weight:500;
+}
+.cat-pill:hover,.cat-pill.active{background:rgba(255,255,255,.35)}
+
+/* ─── Stats bar ─── */
+.stats-strip{
+  background:var(--bg-card);border-bottom:1px solid var(--border);
+  padding:12px 0;
+}
+.stats-inner{display:flex;justify-content:center;align-items:center;gap:0}
+.stat-block{display:flex;align-items:center;gap:8px;padding:0 20px}
+.stat-n{font-size:1.5rem;font-weight:700;color:var(--primary);line-height:1}
+.stat-l{font-size:.78rem;color:var(--text-muted)}
+.stat-sep{width:1px;height:28px;background:var(--border)}
+
+/* ─── Section ─── */
+.sec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.sec-head h2{font-size:1.4rem;font-weight:700;margin:0}
+.see-more{background:none;border:none;color:var(--primary);cursor:pointer;font-family:var(--font);font-size:.88rem;font-weight:500;padding:4px 8px;border-radius:8px;transition:var(--ease)}
+.see-more:hover{background:var(--primary-l)}
+
+/* ─── Trip Card ─── */
+.trip-card{
+  background:var(--bg-card);border-radius:var(--radius);
+  border:1px solid var(--border);overflow:hidden;
+  cursor:pointer;transition:transform .2s,box-shadow .2s;
+  height:100%;display:flex;flex-direction:column;
+}
+.trip-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+
+/* ══════════════════════════════════════════
+   ANIMATION 1 — Card fade-up stagger
+   ══════════════════════════════════════════ */
+@keyframes cardFadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0);    }
+}
+.trip-card-anim {
+  opacity: 0;
+  animation: cardFadeUp .45s cubic-bezier(.4,0,.2,1) forwards;
+}
+
+.trip-card-img{
+  width:100%;height:210px;object-fit:cover;display:block;
+  background:var(--bg-section);flex-shrink:0;
+}
+.trip-card-img-ph{
+  width:100%;height:210px;display:flex;align-items:center;
+  justify-content:center;font-size:4rem;
+  background:linear-gradient(135deg,var(--primary-l),var(--border));flex-shrink:0;
+}
+
+.trip-card-body{padding:16px;flex:1;display:flex;flex-direction:column}
+.trip-cat-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--primary-l);color:var(--primary);
+  font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:50px;
+  margin-bottom:8px;
+}
+.trip-card-title{font-weight:700;font-size:1rem;color:var(--text);margin-bottom:6px;line-height:1.3}
+.trip-card-info{font-size:.82rem;color:var(--text-muted);display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.trip-card-info i{font-size:.8rem;color:var(--primary)}
+
+.trip-card-footer{
+  margin-top:auto;padding-top:12px;border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.price-tag{font-weight:700;color:var(--primary);font-size:.95rem}
+.price-free{color:var(--success);font-weight:700}
+
+/* ══════════════════════════════════════════
+   ANIMATION 3 — Slots progress bar smooth
+   ══════════════════════════════════════════ */
+.slots-bar{background:var(--border);height:4px;border-radius:2px;overflow:hidden;margin-top:8px}
+.slots-fill{
+  height:100%;background:var(--primary);border-radius:2px;
+  width:0;
+  transition: width 1s cubic-bezier(.4,0,.2,1);
+}
+.slots-full .slots-fill{background:var(--danger)}
+
+/* Status badges */
+.badge-open{background:#EDE9FE;color:#6D28D9;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:50px}
+.badge-full{background:#FEF3C7;color:#B45309;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:50px}
+.badge-hidden{background:#F3F4F6;color:#6B7280;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:50px}
+
+[data-theme="dark"] .badge-open{background:#2D1F5E;color:#C4B5FD}
+[data-theme="dark"] .badge-full{background:#451A03;color:#FDE68A}
+[data-theme="dark"] .badge-hidden{background:#1F2937;color:#9CA3AF}
+
+/* ─── Category Filter Bar ─── */
+.filter-bar{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:14px 16px;
+  margin-bottom:24px;box-shadow:var(--shadow-sm);
+}
+.cat-filter-btns{display:flex;gap:6px;flex-wrap:wrap}
+.cfbtn{
+  border:1px solid var(--border);background:transparent;
+  color:var(--text-muted);padding:6px 14px;border-radius:50px;
+  cursor:pointer;font-size:.85rem;font-family:var(--font);font-weight:500;
+  transition:var(--ease);display:flex;align-items:center;gap:5px;
+}
+.cfbtn:hover{border-color:var(--primary);color:var(--primary)}
+.cfbtn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+/* ─── Detail Page ─── */
+.detail-gallery{
+  display:grid;grid-template-columns:1.7fr 1fr;
+  grid-template-rows:220px 160px;gap:4px;
+  border-radius:var(--radius);overflow:hidden;margin-bottom:24px;
+}
+.detail-gallery .g-main{grid-row:span 2}
+.detail-gallery img{width:100%;height:100%;object-fit:cover;cursor:pointer;transition:opacity .2s;display:block}
+.detail-gallery img:hover{opacity:.88}
+.gallery-more{position:relative;cursor:pointer}
+.gallery-more img{filter:brightness(.5)}
+.gallery-more-lbl{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:1.5rem;font-weight:700;
+}
+
+.detail-card{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:20px;
+}
+.detail-card h5{font-weight:700;margin-bottom:14px;font-size:1rem;
+  display:flex;align-items:center;gap:8px}
+
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info-item{background:var(--bg-section);border-radius:var(--radius-sm);padding:12px}
+.info-item .lbl{font-size:.75rem;color:var(--text-muted);margin-bottom:3px}
+.info-item .val{font-weight:600;font-size:.95rem}
+
+/* QR Code display */
+.qr-box{
+  text-align:center;padding:20px;
+  background:var(--bg-section);border-radius:var(--radius-sm);
+}
+.qr-img{width:180px;height:180px;object-fit:contain;border-radius:10px;
+  border:4px solid var(--border);background:#fff}
+.qr-placeholder{
+  width:180px;height:180px;border-radius:10px;
+  border:3px dashed var(--border);display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:6px;
+  color:var(--text-muted);font-size:.82rem;margin:0 auto;
+}
+
+/* Register Form */
+.reg-form{background:var(--primary-l);border-radius:var(--radius-sm);padding:16px}
+[data-theme="dark"] .reg-form{background:#1E1045}
+
+/* ─── Lightbox ─── */
+.lightbox{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,0,0,.93);
+  display:flex;align-items:center;justify-content:center;
+}
+.lightbox img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:8px}
+.lb-x,.lb-p,.lb-n{
+  position:fixed;background:rgba(255,255,255,.1);border:none;
+  color:#fff;font-size:1.3rem;cursor:pointer;
+  padding:8px 13px;border-radius:8px;transition:background .2s;
+}
+.lb-x:hover,.lb-p:hover,.lb-n:hover{background:rgba(255,255,255,.25)}
+.lb-x{top:16px;right:16px}
+.lb-p{left:12px;top:50%;transform:translateY(-50%)}
+.lb-n{right:12px;top:50%;transform:translateY(-50%)}
+.lb-cnt{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.5);color:#fff;padding:4px 14px;
+  border-radius:50px;font-size:.82rem;
+}
+
+/* ─── Admin ─── */
+.admin-layout{display:flex;min-height:calc(100vh - 61px)}
+.admin-side{
+  width:210px;flex-shrink:0;
+  background:var(--bg-card);border-right:1px solid var(--border);
+  padding:16px 0;
+}
+.admin-body{flex:1;padding:24px;overflow:auto}
+
+.aside-btn{
+  display:flex;align-items:center;gap:10px;
+  width:100%;text-align:left;background:none;border:none;
+  padding:10px 18px;font-family:var(--font);font-size:.9rem;
+  color:var(--text-muted);cursor:pointer;
+  border-left:3px solid transparent;transition:var(--ease);
+}
+.aside-btn:hover{background:var(--primary-l);color:var(--primary)}
+.aside-btn.active{
+  background:var(--primary-l);color:var(--primary);
+  border-left-color:var(--primary);font-weight:600;
+}
+
+.astat{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-sm);padding:16px;
+  display:flex;align-items:center;gap:12px;
+}
+.astat-ico{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;flex-shrink:0;
+}
+.astat-num{font-size:1.6rem;font-weight:700;line-height:1}
+.astat-lbl{font-size:.76rem;color:var(--text-muted)}
+
+/* Admin table */
+.adm-table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border)}
+.adm-table{width:100%;border-collapse:collapse;font-size:.86rem}
+.adm-table th{
+  background:var(--bg-section);padding:10px 14px;
+  text-align:left;font-weight:600;color:var(--text-muted);
+  white-space:nowrap;border-bottom:1px solid var(--border);
+}
+.adm-table td{
+  padding:10px 14px;border-bottom:1px solid var(--border);
+  color:var(--text);vertical-align:middle;
+}
+.adm-table tr:last-child td{border-bottom:none}
+.adm-table tr:hover td{background:var(--primary-l)}
+.adm-table img{width:44px;height:44px;object-fit:cover;border-radius:8px}
+
+/* Toggle Switch */
+.toggle-wrap{display:flex;align-items:center;gap:8px}
+.toggle{position:relative;display:inline-block;width:40px;height:22px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{
+  position:absolute;inset:0;background:#CBD5E1;border-radius:22px;cursor:pointer;
+  transition:.3s;
+}
+.toggle-slider:before{
+  content:'';position:absolute;width:16px;height:16px;
+  left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.3s;
+}
+.toggle input:checked + .toggle-slider{background:var(--primary)}
+.toggle input:checked + .toggle-slider:before{transform:translateX(18px)}
+
+/* Upload area */
+.upload-area{
+  border:2px dashed var(--border);border-radius:var(--radius-sm);
+  padding:20px;text-align:center;cursor:pointer;transition:var(--ease);
+  color:var(--text-muted);
+}
+.upload-area:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-l)}
+.upload-area i{font-size:1.8rem;display:block;margin-bottom:6px}
+
+.img-thumb-wrap{position:relative;display:inline-block}
+.img-thumb{width:68px;height:68px;object-fit:cover;border-radius:8px;border:1px solid var(--border)}
+.img-del{
+  position:absolute;top:-6px;right:-6px;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--danger);color:#fff;border:none;
+  cursor:pointer;font-size:.7rem;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ─── Forms ─── */
+.form-control,.form-select{
+  background:var(--bg-card);border:1px solid var(--border);
+  color:var(--text);font-family:var(--font);border-radius:var(--radius-sm);
+}
+.form-control:focus,.form-select:focus{
+  background:var(--bg-card);color:var(--text);
+  border-color:var(--primary);box-shadow:0 0 0 3px rgba(124,58,237,.12);
+}
+.form-label{font-weight:500;color:var(--text);font-size:.9rem;margin-bottom:5px}
+
+/* Buttons */
+.btn-primary{background:var(--primary);border-color:var(--primary);font-family:var(--font)}
+.btn-primary:hover{background:var(--primary-d);border-color:var(--primary-d)}
+.btn-secondary{background:var(--bg-section);border-color:var(--border);color:var(--text);font-family:var(--font)}
+.btn-warning{font-family:var(--font)}
+.btn-success{font-family:var(--font)}
+.btn-outline-primary{color:var(--primary);border-color:var(--primary);font-family:var(--font)}
+.btn-outline-secondary{border-color:var(--border);color:var(--text-muted);font-family:var(--font)}
+.btn-outline-danger{font-family:var(--font)}
+
+/* ══════════════════════════════════════════
+   ANIMATION 4 — Register button
+   pulse ring + success state
+   ══════════════════════════════════════════ */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0   rgba(124,58,237,.45); }
+  70%  { box-shadow: 0 0 0 12px rgba(124,58,237,0);  }
+  100% { box-shadow: 0 0 0 0   rgba(124,58,237,0);   }
+}
+@keyframes checkPop {
+  0%   { transform: scale(0) rotate(-20deg); opacity:0; }
+  60%  { transform: scale(1.25) rotate(4deg); opacity:1; }
+  100% { transform: scale(1) rotate(0);      opacity:1; }
+}
+.btn-reg-pulse {
+  animation: pulseRing 1.1s ease-out 3;
+}
+.btn-reg-success {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+  transition: background .3s, border-color .3s !important;
+}
+.btn-reg-success .reg-check-icon {
+  display: inline-block !important;
+  animation: checkPop .35s ease;
+}
+.reg-check-icon { display: none; }
+
+/* Modal */
+.modal-content{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);color:var(--text);
+}
+.modal-header{
+  border-bottom:1px solid var(--border);background:var(--bg-section);
+  border-radius:var(--radius) var(--radius) 0 0;padding:14px 20px;
+}
+.modal-title{font-weight:700;font-size:1rem}
+.modal-footer{border-top:1px solid var(--border)}
+[data-theme="dark"] .btn-close{filter:invert(1)}
+
+/* ══════════════════════════════════════════
+   ANIMATION 5 — Toast slide-in from right
+   ══════════════════════════════════════════ */
+@keyframes toastIn {
+  from { transform:translateX(56px); opacity:0; }
+  to   { transform:translateX(0);    opacity:1; }
+}
+@keyframes toastOut {
+  from { transform:translateX(0);    opacity:1; }
+  to   { transform:translateX(56px); opacity:0; }
+}
+#toast-wrap{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast-item{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:12px;padding:12px 16px;box-shadow:var(--shadow-lg);
+  display:flex;align-items:center;gap:10px;min-width:240px;max-width:320px;
+  animation: toastIn .28s cubic-bezier(.4,0,.2,1);
+}
+.toast-item.leaving {
+  animation: toastOut .28s cubic-bezier(.4,0,.2,1) forwards;
+}
+.toast-item.success{border-left:4px solid var(--success)}
+.toast-item.error  {border-left:4px solid var(--danger)}
+.toast-item.info   {border-left:4px solid var(--info)}
+
+/* Loading */
+/* ══════════════════════════════════════════
+   LOADING — Suitcase bounce
+   ══════════════════════════════════════════ */
+@keyframes suitBounce {
+  0%,100% { transform:translateY(0); }
+  40%     { transform:translateY(-20px); }
+  60%     { transform:translateY(-13px); }
+}
+@keyframes suitShadow {
+  0%,100% { transform:scaleX(1);   opacity:.35; }
+  40%     { transform:scaleX(.45); opacity:.12; }
+}
+@keyframes loadDot {
+  0%,80%,100% { opacity:.25; transform:scale(.65); }
+  40%         { opacity:1;   transform:scale(1);   }
+}
+@keyframes overlayIn {
+  from { opacity:0; }
+  to   { opacity:1; }
+}
+@keyframes boxIn {
+  from { opacity:0; transform:translateY(12px) scale(.96); }
+  to   { opacity:1; transform:translateY(0)    scale(1);   }
+}
+
+.loading-overlay{
+  position:fixed;inset:0;z-index:9998;
+  background:rgba(15,10,30,.6);
+  backdrop-filter:blur(3px);
+  display:flex;align-items:center;justify-content:center;
+  animation:overlayIn .2s ease;
+}
+.loading-box{
+  background:linear-gradient(135deg,#2D1F5E 0%,#7C3AED 60%,#A855F7 100%);
+  border-radius:24px;
+  padding:36px 44px;
+  text-align:center;
+  box-shadow:0 24px 64px rgba(124,58,237,.45);
+  animation:boxIn .25s cubic-bezier(.4,0,.2,1);
+  min-width:180px;
+}
+.loading-suit-emoji {
+  font-size:3rem;
+  display:block;
+  animation:suitBounce 1.3s ease-in-out infinite;
+  line-height:1;
+}
+.loading-suit-shadow {
+  width:38px;height:7px;border-radius:50%;
+  background:rgba(0,0,0,.45);
+  margin:4px auto 0;
+  animation:suitShadow 1.3s ease-in-out infinite;
+}
+.loading-txt {
+  color:rgba(255,255,255,.9);
+  font-family:var(--font);
+  font-size:.88rem;
+  margin-top:14px;
+  letter-spacing:.03em;
+}
+.loading-dots {
+  display:inline-flex;gap:4px;margin-left:3px;vertical-align:middle;
+}
+.loading-dot {
+  width:5px;height:5px;border-radius:50%;
+  background:rgba(255,255,255,.85);
+  animation:loadDot 1.1s ease-in-out infinite;
+}
+.loading-dot:nth-child(2){ animation-delay:.18s }
+.loading-dot:nth-child(3){ animation-delay:.36s }
+
+/* Empty */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-muted)}
+.empty-state i{font-size:3.5rem;opacity:.2;display:block;margin-bottom:10px}
+
+/* Chart */
+.chart-wrap{position:relative;height:220px}
+
+/* Register success box */
+.reg-success{
+  text-align:center;padding:24px;
+  background:linear-gradient(135deg,#EDE9FE,#F0FDF4);
+  border-radius:var(--radius);border:1px solid var(--border);
+}
+[data-theme="dark"] .reg-success{background:linear-gradient(135deg,#1E1045,#0A2A1A)}
+
+/* ─── Google Maps button ─── */
+.maps-btn {
+  display:inline-flex;align-items:center;gap:7px;
+  background:#1A73E8;color:#fff;border:none;
+  padding:9px 18px;border-radius:var(--radius-sm);
+  font-family:var(--font);font-size:.88rem;font-weight:500;
+  cursor:pointer;text-decoration:none;
+  transition:background .2s, transform .15s;
+}
+.maps-btn:hover { background:#1558B0; color:#fff; transform:translateY(-1px); }
+.maps-btn i { font-size:1rem; }
+
+/* ─── Members list ─── */
+.members-section {
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:20px;
+}
+.members-section h5 {
+  font-weight:700;margin-bottom:14px;font-size:1rem;
+  display:flex;align-items:center;gap:8px;
+}
+.members-toggle {
+  background:none;border:1px solid var(--border);
+  color:var(--text-muted);padding:6px 14px;
+  border-radius:50px;font-size:.82rem;font-family:var(--font);
+  cursor:pointer;transition:var(--ease);
+  display:inline-flex;align-items:center;gap:5px;
+}
+.members-toggle:hover { border-color:var(--primary);color:var(--primary); }
+
+.members-grid {
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  gap:8px;margin-top:12px;
+}
+@keyframes memberFadeIn {
+  from { opacity:0; transform:scale(.94); }
+  to   { opacity:1; transform:scale(1);   }
+}
+.member-chip {
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg-section);border-radius:var(--radius-sm);
+  padding:8px 10px;
+  animation: memberFadeIn .25s ease both;
+}
+.member-avatar {
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:700;color:#fff;
+}
+.member-name { font-size:.82rem;font-weight:500;color:var(--text);line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.member-status { font-size:.68rem;color:var(--text-muted); }
+
+.members-empty { text-align:center;padding:20px;color:var(--text-muted);font-size:.88rem; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE — Mobile first
+   ══════════════════════════════════════════ */
+
+/* ── Tablet ≤ 992px ── */
+@media(max-width:992px){
+  .hero-title{ font-size:clamp(1.5rem,4vw,2.4rem) }
+  .hero-content{ padding:44px 0 }
+
+  .detail-gallery{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:200px 140px;
+  }
+  .detail-gallery .g-main{ grid-row:auto; grid-column:span 2 }
+}
+
+/* ── Mobile ≤ 768px ── */
+@media(max-width:768px){
+
+  /* Navbar */
+  #mainNav .container{ padding:10px 14px }
+  .brand span{ font-size:.78rem; padding:2px 6px }
+
+  /* Hero */
+  .hero{ min-height:360px }
+  .hero-content{ padding:36px 12px }
+  .hero-title{ font-size:clamp(1.35rem,5.5vw,2rem); line-height:1.25 }
+  .hero-sub{ font-size:.88rem; margin-bottom:20px }
+  .hero-eyebrow{ font-size:.72rem; padding:4px 12px }
+  .cat-pills{ gap:6px }
+  .cat-pill{ font-size:.78rem; padding:6px 12px }
+
+  /* Stats */
+  .stats-inner{ gap:0; flex-wrap:nowrap }
+  .stat-block{ padding:0 12px; flex-direction:column; align-items:center; gap:2px }
+  .stat-n{ font-size:1.2rem }
+  .stat-l{ font-size:.7rem; text-align:center }
+  .stat-sep{ height:22px }
+
+  /* Section head */
+  .sec-head h2{ font-size:1.15rem }
+
+  /* Trip cards — single col on very small, 2 col otherwise */
+  .col-sm-6{ width:100% }
+
+  /* Filter bar */
+  .filter-bar{ padding:10px 12px }
+  .cfbtn{ font-size:.78rem; padding:5px 10px }
+
+  /* Detail gallery */
+  .detail-gallery{
+    grid-template-columns:1fr;
+    grid-template-rows:220px 120px 120px;
+  }
+  .detail-gallery .g-main{ grid-column:auto }
+
+  /* Detail layout — stack cards */
+  .detail-card{ padding:14px }
+  .info-grid{ grid-template-columns:1fr }
+  .info-item .val{ font-size:.88rem }
+
+  /* Maps button full width */
+  .maps-btn{ width:100%; justify-content:center; margin-top:8px }
+
+  /* QR */
+  .qr-img{ width:150px; height:150px }
+  .qr-placeholder{ width:150px; height:150px }
+
+  /* Members grid */
+  .members-grid{ grid-template-columns:repeat(auto-fill,minmax(120px,1fr)) }
+
+  /* Admin */
+  .admin-layout{ flex-direction:column }
+  .admin-side{
+    width:100%; border-right:none;
+    border-bottom:1px solid var(--border);
+    padding:8px 0;
+  }
+  .admin-side > div{ display:flex; overflow-x:auto; padding:0 4px }
+  .aside-btn{
+    display:inline-flex; width:auto; white-space:nowrap;
+    border-left:none; border-bottom:3px solid transparent;
+    padding:8px 14px; flex-shrink:0;
+  }
+  .aside-btn.active{
+    border-left-color:transparent;
+    border-bottom-color:var(--primary);
+  }
+  .admin-body{ padding:14px }
+
+  /* Admin table — hide less important cols */
+  .adm-table th:nth-child(3),
+  .adm-table td:nth-child(3),
+  .adm-table th:nth-child(4),
+  .adm-table td:nth-child(4){ display:none }
+  .adm-table th, .adm-table td{ padding:8px 8px; font-size:.8rem }
+
+  /* Admin stat cards */
+  .astat{ padding:12px }
+  .astat-ico{ width:36px; height:36px; font-size:1rem }
+  .astat-num{ font-size:1.3rem }
+
+  /* Trip form modal */
+  .modal-dialog{ margin:8px }
+  .modal-body{ padding:14px }
+  .upload-area{ padding:14px }
+
+  /* Toast */
+  #toast-wrap{ right:10px; bottom:10px; left:10px }
+  .toast-item{ min-width:unset; max-width:100% }
+
+  /* Loading box */
+  .loading-box{ padding:28px 32px }
+
+  /* Reg success */
+  .reg-success{ padding:16px }
+}
+
+/* ── Small mobile ≤ 480px ── */
+@media(max-width:480px){
+  .hero-title{ font-size:1.3rem }
+  .stat-block{ padding:0 8px }
+  .stat-n{ font-size:1.05rem }
+
+  /* 2-col trip cards → 1-col */
+  .col-sm-6{ width:100% }
+
+  /* Detail gallery single column */
+  .detail-gallery{
+    grid-template-columns:1fr;
+    grid-template-rows:200px;
+  }
+  .detail-gallery > div:not(.g-main){ display:none }
+
+  /* Members grid */
+  .members-grid{ grid-template-columns:1fr 1fr }
+
+  /* Admin table compact */
+  .adm-table th:nth-child(5),
+  .adm-table td:nth-child(5),
+  .adm-table th:nth-child(6),
+  .adm-table td:nth-child(6){ display:none }
+
+  /* Buttons full width in detail CTA */
+  .detail-card .btn{ font-size:.85rem }
+}
+</style>
+</head>
+
+<!-- ════ NAVBAR ════ -->
+<nav id="mainNav">
+  <div class="container">
+    <a class="brand" href="#" onclick="showPage('home')">
+      🧳 <span>Winter Wonder</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <div class="nav-links d-none d-md-flex">
+      <button class="nav-pill active" id="npHome"  onclick="showPage('home')">🏠 หน้าหลัก</button>
+      <button class="nav-pill"        id="npTrips" onclick="showPage('trips')">🗺️ ทริปทั้งหมด</button>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 ms-auto">
+      <button class="btn-icon" onclick="toggleTheme()" title="เปลี่ยนธีม">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+      </button>
+
+      <!-- Admin logged in -->
+      <div id="adminNav" class="d-none d-flex align-items-center gap-2">
+        <button class="btn btn-warning btn-sm fw-600" onclick="showPage('admin')">
+          <i class="bi bi-speedometer2"></i> Admin
+        </button>
+        <button class="btn-icon" onclick="adminLogout()" title="ออกจากระบบ">
+          <i class="bi bi-box-arrow-right"></i>
+        </button>
+      </div>
+
+      <!-- Lock icon -->
+      <button class="btn-icon" id="lockBtn" onclick="openModal('loginModal')" title="Admin Login">
+        <i class="bi bi-shield-lock"></i>
+      </button>
+
+      <!-- Mobile menu -->
+      <button class="btn-icon d-md-none" onclick="toggleMob()">
+        <i class="bi bi-list" id="mobIcon"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile nav dropdown -->
+  <div id="mobileNav" class="d-none">
+    <button class="mob-nav-btn" onclick="showPage('home')">🏠 หน้าหลัก</button>
+    <button class="mob-nav-btn" onclick="showPage('trips')">🗺️ ทริปทั้งหมด</button>
+    <hr style="margin:4px 0;border-color:var(--border)">
+    <button class="mob-nav-btn" onclick="openModal('loginModal')">🔒 Admin Login</button>
+  </div>
+</nav>
+
+<!-- ════ PAGES ════ -->
+<div id="appRoot">
+
+  <!-- ═══ HOME ═══ -->
+  <div id="page-home" class="page active">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-bg-shapes">
+        <div class="hero-shape s1"></div>
+        <div class="hero-shape s2"></div>
+        <div class="hero-shape s3"></div>
+      </div>
+      <div class="container hero-content">
+        <div class="hero-eyebrow">✨ ชวนกันไปสนุก</div>
+        <h1 class="hero-title">ทริปสนุกจากกลุ่ม Winter Wonder<br>มาเที่ยวด้วยกัน!</h1>
+        <p class="hero-sub">ถ้าไป กดลงชื่อ แล้วไปด้วยกัน</p>
+        <div class="cat-pills">
+          <button class="cat-pill active" onclick="filterHomeCat('')">🌟 ทั้งหมด</button>
+          <button class="cat-pill" onclick="filterHomeCat('ท่องเที่ยว')">🏔️ ท่องเที่ยว</button>
+          <button class="cat-pill" onclick="filterHomeCat('ปาร์ตี้ดื่ม')">🍻 ปาร์ตี้ดื่ม</button>
+          <button class="cat-pill" onclick="filterHomeCat('หมูกระทะ-ชาบู')">🥩 หมูกระทะ</button>
+          <button class="cat-pill" onclick="filterHomeCat('จัดปีใหม่')">🎆 จัดปีใหม่</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <div class="stats-strip">
+      <div class="container stats-inner">
+        <div class="stat-block">
+          <div class="stat-n" id="s-trips">–</div>
+          <div class="stat-l">ทริปทั้งหมด</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-block">
+          <div class="stat-n" id="s-regs">–</div>
+          <div class="stat-l">ลงทะเบียนแล้ว</div>
+        </div>
+        <div class="stat-sep"></div>
+        <div class="stat-block">
+          <div class="stat-n" id="s-open">–</div>
+          <div class="stat-l">กำลังเปิด</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trips Grid -->
+    <section class="py-5">
+      <div class="container">
+        <div class="sec-head">
+          <h2 id="homeGridTitle">ทริปที่กำลังเปิด</h2>
+          <button class="see-more" onclick="showPage('trips')">ดูทั้งหมด →</button>
+        </div>
+        <div class="row g-4" id="homeGrid">
+          <div class="col-12 text-center py-5">
+            <span style="font-size:2.2rem;display:block;animation:suitBounce 1.3s ease-in-out infinite">🧳</span>
+            <div style="width:28px;height:5px;border-radius:50%;background:rgba(124,58,237,.25);animation:suitShadow 1.3s ease-in-out infinite;margin:4px auto 8px"></div>
+            <div style="font-size:.8rem;color:var(--text-muted)">กำลังโหลด</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══ ALL TRIPS ═══ -->
+  <div id="page-trips" class="page">
+    <div class="container py-4">
+      <div class="sec-head mb-4">
+        <h2>🗺️ ทริปทั้งหมด</h2>
+      </div>
+      <div class="filter-bar">
+        <div class="cat-filter-btns" id="tripCatBtns">
+          <button class="cfbtn active" data-cat="" onclick="setTripCat('',this)">🌟 ทั้งหมด</button>
+          <button class="cfbtn" data-cat="ท่องเที่ยว"    onclick="setTripCat('ท่องเที่ยว',this)">🏔️ ท่องเที่ยว</button>
+          <button class="cfbtn" data-cat="ปาร์ตี้ดื่ม"  onclick="setTripCat('ปาร์ตี้ดื่ม',this)">🍻 ปาร์ตี้ดื่ม</button>
+          <button class="cfbtn" data-cat="หมูกระทะ-ชาบู" onclick="setTripCat('หมูกระทะ-ชาบู',this)">🥩 หมูกระทะ</button>
+          <button class="cfbtn" data-cat="จัดปีใหม่"    onclick="setTripCat('จัดปีใหม่',this)">🎆 จัดปีใหม่</button>
+        </div>
+      </div>
+      <div id="tripsCount" class="text-muted small mb-3"></div>
+      <div class="row g-4" id="tripsGrid">
+        <div class="col-12 text-center py-5">
+          <span style="font-size:2.2rem;display:block;animation:suitBounce 1.3s ease-in-out infinite">🧳</span>
+          <div style="width:28px;height:5px;border-radius:50%;background:rgba(124,58,237,.25);animation:suitShadow 1.3s ease-in-out infinite;margin:4px auto 8px"></div>
+          <div style="font-size:.8rem;color:var(--text-muted)">กำลังโหลด</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TRIP DETAIL ═══ -->
+  <div id="page-detail" class="page">
+    <div id="detailContent"></div>
+  </div>
+
+  <!-- ═══ ADMIN ═══ -->
+  <div id="page-admin" class="page">
+    <div id="adminContent"></div>
+  </div>
+
+</div><!-- /appRoot -->
+
+
+<!-- ════ MODALS ════ -->
+
+<!-- Admin Login -->
+<div class="modal fade" id="loginModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-shield-lock text-warning"></i> Admin Login</h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="loginErr" class="alert alert-danger d-none small py-2"></div>
+        <div class="mb-3">
+          <label class="form-label">อีเมล</label>
+          <input type="email" class="form-control form-control-sm" id="aEmail" placeholder="admin@example.com">
+        </div>
+        <div class="mb-1">
+          <label class="form-label">รหัสผ่าน</label>
+          <input type="password" class="form-control form-control-sm" id="aPass"
+                 onkeyup="if(event.key==='Enter') doAdminLogin()">
+        </div>
+      </div>
+      <div class="modal-footer py-2">
+        <button class="btn btn-warning w-100 fw-600" onclick="doAdminLogin()">
+          <i class="bi bi-box-arrow-in-right"></i> เข้าสู่ระบบ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Register Trip Modal -->
+<div class="modal fade" id="regModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="regModalTitle">
+          <i class="bi bi-person-check-fill"></i> ลงชื่อเข้าร่วม
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="regErr" class="alert alert-danger d-none small py-2"></div>
+        <div id="regSuccessBox" class="d-none reg-success">
+          <div style="font-size:3rem">🎉</div>
+          <h5 class="mt-2 fw-700">ลงชื่อสำเร็จ!</h5>
+          <p class="text-muted small mb-0" id="regSuccessMsg"></p>
+        </div>
+        <div id="regFormBox">
+          <p class="text-muted small mb-3">กรอกชื่อเล่นเพื่อลงชื่อเข้าร่วม</p>
+          <div class="mb-3">
+            <label class="form-label">ชื่อเล่น *</label>
+            <input type="text" class="form-control" id="regName" placeholder="ชื่อเล่นของคุณ">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">อีเมล <span class="text-muted">(รับอีเมลยืนยัน)</span></label>
+            <input type="email" class="form-control" id="regEmail" placeholder="email@example.com">
+          </div>
+          <div class="mb-3">
+            <label class="form-label">เบอร์โทรศัพท์ <span class="text-muted">(ไม่บังคับ)</span></label>
+            <input type="tel" class="form-control" id="regPhone" placeholder="08x-xxx-xxxx">
+          </div>
+          <div class="mb-2">
+            <label class="form-label">หมายเหตุ <span class="text-muted">(ไม่บังคับ)</span></label>
+            <input type="text" class="form-control" id="regNote" placeholder="เช่น มีอาหารแพ้, จำนวนคนที่มา">
+          </div>
+          <input type="hidden" id="regTripId">
+        </div>
+      </div>
+      <div class="modal-footer" id="regFooter">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+        <button class="btn btn-primary fw-600" onclick="submitReg()">
+          <i class="bi bi-check-lg"></i>
+          <span> ยืนยันลงชื่อ</span>
+          <i class="bi bi-check-lg reg-check-icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin: Trip Form Modal -->
+<div class="modal fade" id="tripFormModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="tripFormTitle">
+          <i class="bi bi-plus-circle-fill"></i> สร้างทริปใหม่
+        </h5>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="fTripId">
+        <div class="row g-3">
+
+          <!-- ชื่อทริป -->
+          <div class="col-12">
+            <label class="form-label">ชื่อทริป *</label>
+            <input type="text" class="form-control" id="fTitle" placeholder="เช่น เที่ยวเชียงใหม่ 3 วัน 2 คืน">
+          </div>
+
+          <!-- หมวด / วันที่ / เวลา -->
+          <div class="col-12 col-md-4">
+            <label class="form-label">หมวดหมู่ *</label>
+            <select class="form-select" id="fCat">
+              <option value="ท่องเที่ยว">🏔️ ท่องเที่ยว</option>
+              <option value="ปาร์ตี้ดื่ม">🍻 ปาร์ตี้ดื่ม</option>
+              <option value="หมูกระทะ-ชาบู">🥩 หมูกระทะ-ชาบู</option>
+              <option value="จัดปีใหม่">🎆 จัดปีใหม่</option>
+            </select>
+          </div>
+          <div class="col-6 col-md-4">
+            <label class="form-label">วันที่ *</label>
+            <input type="date" class="form-control" id="fDate">
+          </div>
+          <div class="col-6 col-md-4">
+            <label class="form-label">เวลา</label>
+            <input type="time" class="form-control" id="fTime">
+          </div>
+
+          <!-- สถานที่ / ราคา / จำนวน -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">สถานที่ / จุดนัดพบ</label>
+            <input type="text" class="form-control" id="fLoc" placeholder="เช่น ลานจอดรถ Big C เชียงใหม่">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">ค่าใช้จ่าย (บาท)</label>
+            <input type="number" class="form-control" id="fPrice" min="0" value="0" placeholder="0 = ฟรี">
+          </div>
+          <div class="col-6 col-md-3">
+            <label class="form-label">จำนวนที่รับ</label>
+            <input type="number" class="form-control" id="fSlots" min="0" value="0" placeholder="0 = ไม่จำกัด">
+          </div>
+
+          <!-- ✅ Google Maps Link -->
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-geo-alt-fill" style="color:#1A73E8"></i>
+              ลิงก์ Google Maps
+            </label>
+            <div class="input-group">
+              <span class="input-group-text" style="background:var(--bg-section);border-color:var(--border);color:var(--text-muted)">
+                <i class="bi bi-link-45deg"></i>
+              </span>
+              <input type="url" class="form-control" id="fMapUrl"
+                     placeholder="https://maps.google.com/...">
+            </div>
+            <div class="form-text" style="font-size:.77rem;color:var(--text-muted)">
+              เปิด Google Maps → กด แชร์ → คัดลอกลิงก์ แล้ววางตรงนี้
+            </div>
+          </div>
+
+          <!-- รายละเอียด -->
+          <div class="col-12">
+            <label class="form-label">รายละเอียด / กำหนดการ</label>
+            <textarea class="form-control" id="fDesc" rows="4"
+              placeholder="คำอธิบาย กำหนดการ สิ่งที่ต้องเตรียม ฯลฯ"></textarea>
+          </div>
+
+          <!-- QR PromptPay -->
+          <div class="col-12">
+            <label class="form-label">
+              <i class="bi bi-qr-code text-primary"></i>
+              QR Code PromptPay สำหรับชำระเงิน
+            </label>
+            <div class="d-flex gap-3 align-items-start flex-wrap">
+              <div class="upload-area flex-grow-1" onclick="document.getElementById('fQrFile').click()">
+                <input type="file" id="fQrFile" class="d-none" accept="image/*" onchange="previewQr(this)">
+                <i class="bi bi-qr-code-scan"></i>
+                <p class="mb-0 small">อัปโหลด QR Code PromptPay</p>
+              </div>
+              <div id="qrPreview" class="d-none">
+                <img id="qrPreviewImg" src="" style="width:100px;height:100px;object-fit:contain;border-radius:8px;border:2px solid var(--border)">
+                <button class="btn btn-outline-danger btn-sm d-block mt-1" onclick="clearQr()">ลบ QR</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- รูปหลัก -->
+          <div class="col-12">
+            <label class="form-label">รูปปกทริป</label>
+            <div class="upload-area" onclick="document.getElementById('fMainImg').click()">
+              <input type="file" id="fMainImg" class="d-none" accept="image/*" onchange="previewMain(this)">
+              <div id="mainPreviewBox">
+                <i class="bi bi-image-fill"></i>
+                <p class="mb-0 small">คลิกอัปโหลดรูปปก</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- รูปเพิ่มเติม -->
+          <div class="col-12">
+            <label class="form-label">รูปเพิ่มเติม</label>
+            <div class="upload-area" onclick="document.getElementById('fExtraImgs').click()">
+              <input type="file" id="fExtraImgs" class="d-none" accept="image/*" multiple onchange="addExtraPreviews(this)">
+              <i class="bi bi-images"></i>
+              <p class="mb-0 small">คลิกเพื่อเพิ่มรูปหลายรูป</p>
+            </div>
+            <div id="extraPreviews" class="d-flex flex-wrap gap-2 mt-2"></div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+        <button class="btn btn-primary fw-600" onclick="submitTripForm()">
+          <i class="bi bi-check-lg"></i> <span id="tripFormBtn">บันทึกทริป</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox d-none" onclick="closeLb()">
+  <button class="lb-x" onclick="closeLb()"><i class="bi bi-x-lg"></i></button>
+  <button class="lb-p" onclick="lbNav(-1);event.stopPropagation()"><i class="bi bi-chevron-left"></i></button>
+  <button class="lb-n" onclick="lbNav(1);event.stopPropagation()"><i class="bi bi-chevron-right"></i></button>
+  <img id="lbImg" src="" alt="" onclick="event.stopPropagation()">
+  <div class="lb-cnt" id="lbCnt"></div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-wrap"></div>
+
+<!-- Loading -->
+<div id="loadingOverlay" class="loading-overlay d-none">
+  <div class="loading-box">
+    <span class="loading-suit-emoji" id="loadEmoji">🧳</span>
+    <div class="loading-suit-shadow"></div>
+    <div class="loading-txt">
+      <span id="loadTxt">กำลังโหลด</span><span class="loading-dots"><span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span></span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+// ============================================================
+// Trip Party - Frontend JS v3 + Animations
+// ============================================================
+
+const API_URL = 'https://script.google.com/macros/s/AKfycbzjwY2o6IThG05fhDfGY_ytsdOqWbvmIWbl8U2u1w0K_Ac9bg1175CmdETAmV1kuQYJ/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
+
+// ── State ──
+let adminToken  = null;
+let allTrips    = [];
+let homeCatFilter  = '';
+let tripsCatFilter = '';
+let extraImgFiles  = [];
+let qrFileObj      = null;
+
+// Lightbox
+let lbImgs = [], lbIdx = 0;
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadTheme();
+  restoreAdmin();
+  loadHome();
+});
+
+// ─────────────────────────────────────────
+// API
+// ─────────────────────────────────────────
+async function api(action, data = {}) {
+  if (adminToken) data.adminToken = adminToken;
+  try {
+    const r = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action, ...data }),
+      headers: { 'Content-Type': 'text/plain' }
+    });
+    return await r.json();
+  } catch(e) {
+    console.error(action, e);
+    return { success: false, message: 'เชื่อมต่อไม่ได้: ' + e.message };
+  }
+}
+
+// ─────────────────────────────────────────
+// NAVIGATION
+// ─────────────────────────────────────────
+// ── Page history for back button ──
+let _pageHistory = [];
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(el => {
+    el.classList.remove('active');
+    el.style.animation = 'none';
+  });
+  const target = document.getElementById('page-' + p);
+  if (target) {
+    target.style.animation = 'none';
+    void target.offsetWidth;
+    target.style.animation = '';
+    target.classList.add('active');
+  }
+  // track history (max 10, no consecutive duplicates)
+  if (_pageHistory[_pageHistory.length - 1] !== p) {
+    _pageHistory.push(p);
+    if (_pageHistory.length > 10) _pageHistory.shift();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  closeMob();
+
+  ['Home','Trips'].forEach(n => document.getElementById('np'+n)?.classList.remove('active'));
+  if (p === 'home')  document.getElementById('npHome')?.classList.add('active');
+  if (p === 'trips') document.getElementById('npTrips')?.classList.add('active');
+
+  switch(p) {
+    case 'home':   loadHome(); break;
+    case 'trips':  loadTrips(); break;
+    case 'admin':
+      if (!adminToken) { toast('กรุณา Login Admin ก่อน','error'); showPage('home'); return; }
+      loadAdminPage(); break;
+  }
+}
+
+function goBack() {
+  // pop current page, go to previous; default to 'home'
+  _pageHistory.pop(); // remove current (detail)
+  const prev = _pageHistory[_pageHistory.length - 1] || 'home';
+  showPage(prev);
+}
+
+function toggleMob() {
+  const m = document.getElementById('mobileNav');
+  const i = document.getElementById('mobIcon');
+  m.classList.toggle('d-none');
+  i.className = m.classList.contains('d-none') ? 'bi bi-list' : 'bi bi-x-lg';
+}
+function closeMob() {
+  document.getElementById('mobileNav')?.classList.add('d-none');
+  const i = document.getElementById('mobIcon');
+  if (i) i.className = 'bi bi-list';
+}
+
+// ─────────────────────────────────────────
+// ADMIN AUTH
+// ─────────────────────────────────────────
+async function doAdminLogin() {
+  const email = document.getElementById('aEmail').value.trim();
+  const pass  = document.getElementById('aPass').value;
+  showLoad(true, 'กำลัง Login...');
+  const r = await api('adminLogin', { email, password: pass });
+  showLoad(false);
+  if (r.success) {
+    adminToken = r.token;
+    sessionStorage.setItem('tb_admin', adminToken);
+    updateAdminUI();
+    bootstrap.Modal.getInstance(document.getElementById('loginModal'))?.hide();
+    toast('Login Admin สำเร็จ 👑', 'success');
+  } else {
+    document.getElementById('loginErr').textContent = r.message;
+    document.getElementById('loginErr').classList.remove('d-none');
+  }
+}
+
+function adminLogout() {
+  adminToken = null;
+  sessionStorage.removeItem('tb_admin');
+  updateAdminUI();
+  showPage('home');
+  toast('ออกจากระบบแล้ว', 'info');
+}
+
+function restoreAdmin() {
+  const t = sessionStorage.getItem('tb_admin');
+  if (t) { adminToken = t; updateAdminUI(); }
+}
+
+function updateAdminUI() {
+  document.getElementById('adminNav').classList.toggle('d-none', !adminToken);
+  document.getElementById('lockBtn').classList.toggle('d-none', !!adminToken);
+}
+
+// ─────────────────────────────────────────
+// HOME
+// ─────────────────────────────────────────
+async function loadHome() {
+  showGridLoad('homeGrid');
+  const [tr, sr] = await Promise.all([ api('getTrips', {}), api('getStats', {}) ]);
+  if (tr.success) {
+    allTrips = tr.trips;
+    renderHomeGrid();
+  }
+  if (sr.success) {
+    // ANIMATION 2: count-up stats
+    animateCount('s-trips', sr.stats.totalTrips);
+    animateCount('s-regs',  sr.stats.totalRegs);
+    animateCount('s-open',  sr.stats.visibleTrips);
+  }
+}
+
+function filterHomeCat(cat) {
+  homeCatFilter = cat;
+  document.querySelectorAll('.hero .cat-pill').forEach(b => {
+    b.classList.toggle('active', b.textContent.includes(cat) || (!cat && b.textContent.includes('ทั้งหมด')));
+  });
+  renderHomeGrid();
+}
+
+function renderHomeGrid() {
+  const list = homeCatFilter
+    ? allTrips.filter(t => t.category === homeCatFilter)
+    : allTrips;
+  const title = homeCatFilter ? CAT_LABEL[homeCatFilter] : 'ทริปที่กำลังเปิด';
+  document.getElementById('homeGridTitle').textContent = title;
+  renderGrid('homeGrid', list);
+}
+
+// ─────────────────────────────────────────
+// TRIPS PAGE
+// ─────────────────────────────────────────
+async function loadTrips() {
+  showGridLoad('tripsGrid');
+  const r = await api('getTrips', {});
+  if (r.success) { allTrips = r.trips; renderTripsGrid(); }
+}
+
+function setTripCat(cat, btn) {
+  tripsCatFilter = cat;
+  document.querySelectorAll('#tripCatBtns .cfbtn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTripsGrid();
+}
+
+function renderTripsGrid() {
+  const list = tripsCatFilter
+    ? allTrips.filter(t => t.category === tripsCatFilter)
+    : allTrips;
+  document.getElementById('tripsCount').textContent = `แสดง ${list.length} ทริป`;
+  renderGrid('tripsGrid', list);
+}
+
+// ─────────────────────────────────────────
+// RENDER GRID
+// ─────────────────────────────────────────
+const CAT_EMOJI  = { 'ท่องเที่ยว':'🏔️','ปาร์ตี้ดื่ม':'🍻','หมูกระทะ-ชาบู':'🥩','จัดปีใหม่':'🎆' };
+const CAT_LABEL  = { 'ท่องเที่ยว':'ทริปท่องเที่ยว','ปาร์ตี้ดื่ม':'ปาร์ตี้ดื่ม','หมูกระทะ-ชาบู':'หมูกระทะ-ชาบู','จัดปีใหม่':'จัดงานปีใหม่' };
+const CAT_COLOR  = { 'ท่องเที่ยว':'#2563EB','ปาร์ตี้ดื่ม':'#DC2626','หมูกระทะ-ชาบู':'#D97706','จัดปีใหม่':'#7C3AED' };
+
+function renderGrid(gridId, trips) {
+  const el = document.getElementById(gridId);
+  if (!el) return;
+  if (!trips.length) {
+    el.innerHTML = '<div class="col-12"><div class="empty-state"><i class="bi bi-calendar-x"></i><p>ไม่มีทริปในขณะนี้</p></div></div>';
+    return;
+  }
+  el.innerHTML = trips.map((t, i) => tripCardHTML(t, i)).join('');
+
+  // ANIMATION 3: trigger slots bar after render
+  requestAnimationFrame(() => {
+    el.querySelectorAll('.slots-fill[data-pct]').forEach(bar => {
+      const pct = bar.dataset.pct;
+      setTimeout(() => { bar.style.width = pct + '%'; }, 80);
+    });
+  });
+}
+
+function tripCardHTML(t, idx = 0) {
+  const emoji   = CAT_EMOJI[t.category] || '🌟';
+  const visible = t.isVisible === true || t.isVisible === 'TRUE' || t.isVisible === 'true';
+  const max     = Number(t.maxSlots || 0);
+  const cur     = Number(t.registeredCount || 0);
+  const pct     = max > 0 ? Math.min(100, Math.round(cur/max*100)) : 0;
+  const isFull  = t.isFull;
+
+  const dateStr = t.date
+    ? new Date(t.date).toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'})
+    : 'TBA';
+
+  const badge = !visible
+    ? '<span class="badge-hidden">🔒 ซ่อน</span>'
+    : isFull
+    ? '<span class="badge-full">🔴 เต็ม</span>'
+    : '<span class="badge-open">🟢 เปิดรับ</span>';
+
+  const img = t.mainImage
+    ? `<img class="trip-card-img" src="${t.mainImage}" alt="${t.title}" loading="lazy">`
+    : `<div class="trip-card-img-ph">${emoji}</div>`;
+
+  const priceTag = Number(t.price||0) > 0
+    ? `<span class="price-tag">฿${Number(t.price).toLocaleString()}</span>`
+    : `<span class="price-free">จ่ายเอง จ่ายใครจ่ายมัน!</span>`;
+
+  // ANIMATION 1: stagger delay per card index
+  const delay = idx * 80;
+
+  return `
+  <div class="col-12 col-sm-6 col-xl-4">
+    <div class="trip-card trip-card-anim" style="animation-delay:${delay}ms" onclick="showDetail('${t.tripId}')">
+      ${img}
+      <div class="trip-card-body">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+          <div class="trip-cat-badge">${emoji} ${t.category || 'ทริป'}</div>
+          ${badge}
+        </div>
+        <div class="trip-card-title">${t.title}</div>
+        <div class="trip-card-info"><i class="bi bi-calendar3"></i>${dateStr}${t.time ? ' · '+t.time : ''}</div>
+        <div class="trip-card-info"><i class="bi bi-geo-alt-fill"></i>${t.location || 'TBA'}</div>
+        ${max > 0 ? `
+        <div class="slots-bar ${isFull?'slots-full':''}">
+          <div class="slots-fill" data-pct="${pct}" style="width:0%"></div>
+        </div>
+        <div class="trip-card-info mt-1"><i class="bi bi-people-fill"></i>${cur}/${max} คน${isFull?' · <b style="color:var(--danger)">เต็มแล้ว</b>':''}</div>
+        ` : ''}
+        <div class="trip-card-footer">
+          ${priceTag}
+          <span style="font-size:.78rem;color:var(--text-muted)">คลิกดูรายละเอียด →</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function showGridLoad(id) {
+  const el = document.getElementById(id);
+  if (el) el.innerHTML = `
+    <div class="col-12 text-center py-5">
+      <div style="display:inline-flex;flex-direction:column;align-items:center;gap:6px">
+        <span style="font-size:2.2rem;display:block;animation:suitBounce 1.3s ease-in-out infinite">🧳</span>
+        <div style="width:28px;height:5px;border-radius:50%;background:rgba(124,58,237,.25);animation:suitShadow 1.3s ease-in-out infinite"></div>
+        <div style="font-size:.8rem;color:var(--text-muted);margin-top:4px">กำลังโหลด</div>
+      </div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────
+// ANIMATION 2 — Count-up helper
+// ─────────────────────────────────────────
+function animateCount(id, target, duration = 1200) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const start = performance.now();
+  const from  = parseInt(el.textContent) || 0;
+  const tick = (now) => {
+    const p = Math.min(1, (now - start) / duration);
+    // ease-out cubic
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + (target - from) * eased);
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+// ─────────────────────────────────────────
+// TRIP DETAIL
+// ─────────────────────────────────────────
+async function showDetail(tripId) {
+  showPage('detail');
+  document.getElementById('detailContent').innerHTML =
+    `<div class="container py-5 text-center">
+      <div style="display:inline-flex;flex-direction:column;align-items:center;gap:6px">
+        <span style="font-size:2.4rem;display:block;animation:suitBounce 1.3s ease-in-out infinite">🧳</span>
+        <div style="width:30px;height:5px;border-radius:50%;background:rgba(124,58,237,.25);animation:suitShadow 1.3s ease-in-out infinite"></div>
+        <div style="font-size:.82rem;color:var(--text-muted);margin-top:6px">กำลังโหลดทริป</div>
+      </div>
+    </div>`;
+
+  const r = await api('getTrip', { tripId });
+  if (!r.success) return;
+  renderDetail(r.trip);
+}
+
+function renderDetail(t) {
+  const visible = t.isVisible === true || t.isVisible === 'TRUE' || t.isVisible === 'true';
+  const emoji   = CAT_EMOJI[t.category] || '🌟';
+  const max     = Number(t.maxSlots || 0);
+  const cur     = Number(t.registeredCount || 0);
+  const left    = max > 0 ? Math.max(0, max - cur) : null;
+  const isFull  = t.isFull;
+  const pct     = max > 0 ? Math.min(100, Math.round(cur/max*100)) : 0;
+
+  const allImgs = [t.mainImage, ...(t.images||[]).map(i=>i.url)].filter(Boolean);
+
+  // Gallery
+  let gallery = '';
+  if (allImgs.length === 0) {
+    gallery = `<div class="trip-card-img-ph mb-4" style="height:260px;border-radius:16px;font-size:5rem">${emoji}</div>`;
+  } else if (allImgs.length === 1) {
+    gallery = `<img src="${allImgs[0]}" class="w-100 mb-4"
+      style="height:320px;object-fit:cover;border-radius:16px;cursor:pointer"
+      onclick="openLb(${JSON.stringify(allImgs)},0)">`;
+  } else {
+    const extras = allImgs.slice(1,3);
+    const more   = allImgs.length - 3;
+    gallery = `
+    <div class="detail-gallery mb-4">
+      <div class="g-main"><img src="${allImgs[0]}" onclick="openLb(${JSON.stringify(allImgs)},0)"></div>
+      ${extras.map((im,i)=>`
+        <div class="${i===1&&more>0?'gallery-more':''}">
+          <img src="${im}" onclick="openLb(${JSON.stringify(allImgs)},${i+1})">
+          ${i===1&&more>0?`<div class="gallery-more-lbl">+${more}</div>`:''}
+        </div>`).join('')}
+    </div>`;
+  }
+
+  const dateStr = t.date
+    ? new Date(t.date).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric',weekday:'long'})
+    : 'TBA';
+
+  const priceDisplay = Number(t.price||0) > 0
+    ? `<div class="info-item">
+        <div class="lbl">💰 ค่าใช้จ่าย</div>
+        <div class="val" style="color:var(--primary);font-size:1.1rem">฿${Number(t.price).toLocaleString()}</div>
+       </div>`
+    : `<div class="info-item">
+        <div class="lbl">💰 ค่าใช้จ่าย</div>
+        <div class="val" style="color:var(--success)">ฟรี! 🎉</div>
+       </div>`;
+
+  const qrSection = Number(t.price||0) > 0 ? `
+  <div class="detail-card">
+    <h5><i class="bi bi-qr-code text-primary"></i> ชำระเงิน PromptPay</h5>
+    <div class="qr-box">
+      ${t.payQrUrl
+        ? `<img class="qr-img" src="${t.payQrUrl}" alt="QR PromptPay">
+           <p class="mt-2 small text-muted mb-0">สแกน QR Code เพื่อชำระเงิน ฿${Number(t.price).toLocaleString()}</p>
+           <small class="text-muted">หลังโอนเงินกรุณาส่งสลิปให้ Admin</small>`
+        : `<div class="qr-placeholder">
+             <i class="bi bi-qr-code-scan" style="font-size:2rem;opacity:.4"></i>
+             <span>Admin ยังไม่ได้อัปโหลด QR Code</span>
+           </div>`}
+    </div>
+  </div>` : '';
+
+  // ANIMATION 3: slots bar ใน detail page (data-pct)
+  const slotsSection = max > 0 ? `
+  <div class="detail-card">
+    <h5><i class="bi bi-people-fill text-primary"></i> ที่นั่ง</h5>
+    <div class="text-center mb-3">
+      <div style="font-size:2.5rem;font-weight:700;color:${isFull?'var(--danger)':'var(--primary)'};line-height:1">
+        ${left !== null ? left : '∞'}
+      </div>
+      <div class="text-muted small">${left !== null ? `เหลือ / ${max} ที่นั่ง` : 'ไม่จำกัด'}</div>
+    </div>
+    ${max > 0 ? `
+    <div class="slots-bar" style="height:8px">
+      <div class="slots-fill" data-pct="${pct}" style="width:0%"></div>
+    </div>
+    <div class="d-flex justify-content-between mt-1"><small>${cur} คน</small><small>${max} คน</small></div>` : ''}
+  </div>` : '';
+
+  // ANIMATION 4: CTA button with id for pulse
+  const ctaBtn = !visible
+    ? `<div class="alert alert-secondary small">🔒 ทริปนี้ปิดรับสมัครชั่วคราว</div>`
+    : isFull
+    ? `<div class="alert alert-warning small">⚠️ ทริปเต็มแล้ว (${cur}/${max} คน)</div>`
+    : `<button class="btn btn-primary w-100 fw-600 py-2" id="mainRegBtn"
+         onclick="openReg('${t.tripId}','${t.title.replace(/'/g,"\\'")}')">
+        <i class="bi bi-person-check-fill"></i>
+        <span class="reg-btn-txt"> ลงชื่อเข้าร่วมทริปนี้</span>
+        <i class="bi bi-check-lg reg-check-icon"></i>
+       </button>`;
+
+  const adminCtrl = adminToken ? `
+  <div class="detail-card" style="border-color:var(--accent)">
+    <h5><i class="bi bi-shield-fill-check text-warning"></i> ควบคุม Admin</h5>
+    <div class="d-flex flex-wrap gap-2">
+      <button class="btn btn-warning btn-sm fw-500" onclick="openEditTrip(${JSON.stringify(t).replace(/"/g,'&quot;')})">
+        <i class="bi bi-pencil-fill"></i> แก้ไขทริป
+      </button>
+      <button class="btn ${visible?'btn-secondary':'btn-success'} btn-sm fw-500" onclick="doToggleVisible('${t.tripId}')">
+        <i class="bi bi-${visible?'eye-slash-fill':'eye-fill'}"></i> ${visible?'ซ่อนจากหน้าเว็บ':'เปิดแสดงทริป'}
+      </button>
+      <button class="btn btn-outline-primary btn-sm" onclick="openAdminRegs('${t.tripId}','${t.title.replace(/'/g,"\\'")}')">
+        <i class="bi bi-list-ul"></i> รายชื่อผู้สมัคร
+      </button>
+      <button class="btn btn-outline-danger btn-sm" onclick="doDeleteTrip('${t.tripId}')">
+        <i class="bi bi-trash3-fill"></i> ลบทริป
+      </button>
+    </div>
+    <hr style="margin:12px 0;border-color:var(--border)">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      <small class="text-muted"><i class="bi bi-share-fill"></i> แชร์ให้กลุ่ม:</small>
+      <button class="btn btn-outline-secondary btn-sm" onclick="copyTripLink('${t.tripId}','${t.title.replace(/'/g,"\\'")}',this)">
+        <i class="bi bi-clipboard"></i> Copy ลิงก์ทริป
+      </button>
+      <button class="btn btn-outline-secondary btn-sm" onclick="copyTripMsg('${t.tripId}','${t.title.replace(/'/g,"\\'")}','${(t.date||'').replace(/'/g,"\\'")}','${(t.location||'').replace(/'/g,"\\'")}','${(t.time||'').replace(/'/g,"\\'")}',${Number(t.price||0)},this)">
+        <i class="bi bi-chat-dots"></i> Copy ข้อความพร้อมส่ง
+      </button>
+    </div>
+  </div>` : '';
+
+  document.getElementById('detailContent').innerHTML = `
+  <div class="container py-4">
+    <button class="btn btn-outline-secondary btn-sm mb-3" onclick="goBack()">
+      <i class="bi bi-arrow-left"></i> กลับ
+    </button>
+
+    ${gallery}
+
+    <div class="row g-3">
+      <div class="col-12 col-lg-8">
+        <div class="detail-card">
+          <div class="trip-cat-badge mb-2">${emoji} ${t.category||'ทริป'}</div>
+          <h1 style="font-size:1.8rem;font-weight:700;margin-bottom:12px">${t.title}</h1>
+
+          <div class="info-grid mb-3">
+            <div class="info-item"><div class="lbl">📅 วันที่</div><div class="val">${dateStr}</div></div>
+            <div class="info-item"><div class="lbl">🕐 เวลา</div><div class="val">${t.time||'TBA'}</div></div>
+            <div class="info-item" style="${t.mapUrl ? 'grid-column:span 2' : ''}">
+              <div class="lbl">📍 สถานที่</div>
+              <div class="val">${t.location||'TBA'}</div>
+              ${t.mapUrl ? `
+              <button class="maps-btn mt-2" onclick="window.open('${t.mapUrl.replace(/'/g,"\\'")}','_blank')">
+                <i class="bi bi-geo-alt-fill"></i> เปิด Google Maps
+              </button>` : ''}
+            </div>
+            ${t.mapUrl ? '' : priceDisplay}
+          </div>
+          ${t.mapUrl ? `<div class="mb-3">${priceDisplay}</div>` : ''}
+
+          ${t.description ? `
+          <div style="background:var(--bg-section);border-radius:10px;padding:14px;line-height:1.8;white-space:pre-line">
+            ${t.description}
+          </div>` : ''}
+        </div>
+
+        ${adminCtrl}
+
+        <!-- Members list section -->
+        <div class="members-section" id="membersSection">
+          <h5>
+            <i class="bi bi-people-fill text-primary"></i>
+            คนที่ไปด้วยกัน
+            <span class="trip-cat-badge ms-1">${cur} คน</span>
+          </h5>
+          <button class="members-toggle" id="membersToggleBtn" onclick="toggleMembers('${t.tripId}')">
+            <i class="bi bi-eye" id="membersToggleIcon"></i>
+            <span id="membersToggleTxt">ดูรายชื่อ</span>
+          </button>
+          <div id="membersList" style="display:none"></div>
+        </div>
+
+        ${adminToken ? `
+        <div class="detail-card">
+          <h5><i class="bi bi-images text-primary"></i> รูปภาพทริป</h5>
+          <div class="d-flex flex-wrap gap-2 mb-2" id="tripImgList">
+            ${(t.images||[]).map(im=>`
+              <div class="img-thumb-wrap">
+                <img src="${im.url}" class="img-thumb" onclick="openLb([\'${im.url}\'],0)">
+                <button class="img-del" onclick="doDeleteImg('${im.imageId}','${t.tripId}')">
+                  <i class="bi bi-x"></i>
+                </button>
+              </div>`).join('')}
+          </div>
+          <label class="btn btn-outline-secondary btn-sm">
+            <i class="bi bi-plus-lg"></i> เพิ่มรูป
+            <input type="file" class="d-none" multiple accept="image/*"
+                   onchange="uploadMoreImgs(this,'${t.tripId}')">
+          </label>
+        </div>` : ''}
+      </div>
+
+      <div class="col-12 col-lg-4">
+        <div class="detail-card">
+          ${ctaBtn}
+          ${!isFull && visible ? `<p class="text-muted small text-center mt-2 mb-0">ไม่ต้องสมัครสมาชิก ใส่ชื่อเล่นได้เลย</p>` : ''}
+          <hr style="margin:12px 0;border-color:var(--border)">
+          <button class="btn btn-outline-secondary btn-sm w-100"
+            onclick="copyTripLink('${t.tripId}','${t.title.replace(/'/g,"\\'")}',this)">
+            <i class="bi bi-share"></i> แชร์ทริปนี้ให้เพื่อน
+          </button>
+        </div>
+
+        ${slotsSection}
+        ${qrSection}
+      </div>
+    </div>
+  </div>`;
+
+  // ANIMATION 3: trigger slots bar in detail after DOM ready
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.slots-fill[data-pct]').forEach(bar => {
+      const pct = bar.dataset.pct;
+      setTimeout(() => { bar.style.width = pct + '%'; }, 120);
+    });
+  });
+
+  // ANIMATION 4: pulse the register button after 1.2s
+  setTimeout(() => {
+    const btn = document.getElementById('mainRegBtn');
+    if (btn) {
+      btn.classList.add('btn-reg-pulse');
+      btn.addEventListener('animationend', () => btn.classList.remove('btn-reg-pulse'), { once: true });
+    }
+  }, 1200);
+}
+
+// ─────────────────────────────────────────
+// SHARE / COPY LINK
+// ─────────────────────────────────────────
+function getTripUrl(tripId) {
+  // URL ของ GAS web app + hash เพื่อให้กดแล้วเปิดทริปตรงๆ
+  return API_URL + '#trip=' + tripId;
+}
+
+function copyTripLink(tripId, title, btnEl) {
+  const url = getTripUrl(tripId);
+  navigator.clipboard.writeText(url).then(() => {
+    _flashCopied(btnEl, '<i class="bi bi-check-lg"></i> Copy แล้ว!');
+    toast('Copy ลิงก์สำเร็จ 🔗', 'success');
+  }).catch(() => {
+    // fallback สำหรับ browser ที่ไม่รองรับ clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    _flashCopied(btnEl, '<i class="bi bi-check-lg"></i> Copy แล้ว!');
+    toast('Copy ลิงก์สำเร็จ 🔗', 'success');
+  });
+}
+
+function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
+  const url     = getTripUrl(tripId);
+  const dateStr = date ? new Date(date).toLocaleDateString('th-TH', {
+    year:'numeric', month:'long', day:'numeric', weekday:'long'
+  }) : 'TBA';
+  const priceStr = price > 0 ? `฿${Number(price).toLocaleString()}` : 'ฟรี';
+
+  const msg = [
+    '🧳 ชวนเที่ยว! ' + title,
+    '📅 ' + dateStr + (time ? ' เวลา ' + time : ''),
+    '📍 ' + (location || 'TBA'),
+    '💰 ' + priceStr,
+    '',
+    '👇 ลงชื่อได้ที่นี่',
+    url,
+  ].join('\n');
+
+  navigator.clipboard.writeText(msg).then(() => {
+    _flashCopied(btnEl, '<i class="bi bi-check-lg"></i> Copy แล้ว!');
+    toast('Copy ข้อความสำเร็จ 💬', 'success');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = msg;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    _flashCopied(btnEl, '<i class="bi bi-check-lg"></i> Copy แล้ว!');
+    toast('Copy ข้อความสำเร็จ 💬', 'success');
+  });
+}
+
+function _flashCopied(btnEl, html) {
+  if (!btnEl) return;
+  const orig = btnEl.innerHTML;
+  btnEl.innerHTML = html;
+  btnEl.disabled  = true;
+  setTimeout(() => {
+    btnEl.innerHTML = orig;
+    btnEl.disabled  = false;
+  }, 2000);
+}
+
+// ─────────────────────────────────────────
+// MEMBERS LIST (public view)
+// ─────────────────────────────────────────
+let _membersLoaded = {};
+
+async function toggleMembers(tripId) {
+  const list    = document.getElementById('membersList');
+  const btn     = document.getElementById('membersToggleBtn');
+  const icon    = document.getElementById('membersToggleIcon');
+  const txtEl   = document.getElementById('membersToggleTxt');
+
+  const isOpen  = list.style.display !== 'none';
+
+  if (isOpen) {
+    list.style.display = 'none';
+    icon.className = 'bi bi-eye';
+    txtEl.textContent = 'ดูรายชื่อ';
+    return;
+  }
+
+  // show
+  list.style.display = 'block';
+  icon.className = 'bi bi-eye-slash';
+  txtEl.textContent = 'ซ่อนรายชื่อ';
+
+  if (_membersLoaded[tripId]) return; // already fetched
+
+  list.innerHTML = `<div class="members-empty">
+    <span style="font-size:1.6rem;display:block;animation:suitBounce 1.3s ease-in-out infinite;margin-bottom:4px">🧳</span>
+    <div style="width:22px;height:4px;border-radius:50%;background:rgba(124,58,237,.2);animation:suitShadow 1.3s ease-in-out infinite;margin:0 auto 8px"></div>
+    กำลังโหลดรายชื่อ
+  </div>`;
+
+  const r = await api('getTripMembers', { tripId });
+  _membersLoaded[tripId] = true;
+
+  if (!r.success || !r.members.length) {
+    list.innerHTML = '<div class="members-empty">ยังไม่มีใครลงชื่อ</div>';
+    return;
+  }
+
+  const AVATAR_COLORS = [
+    '#7C3AED','#2563EB','#059669','#D97706',
+    '#DC2626','#0891B2','#7C3AED','#A21CAF'
+  ];
+
+  const chips = r.members.map((reg, i) => {
+    const initial   = (reg.name || '?')[0].toUpperCase();
+    const color     = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const paid      = reg.payStatus === 'ชำระแล้ว';
+    const cancelled = reg.payStatus === 'ยกเลิก';
+    const statusTxt = paid ? '✅ ชำระแล้ว' : cancelled ? '❌ ยกเลิก' : '⏳ รอชำระ';
+    const delay     = i * 35;
+    return `
+    <div class="member-chip" style="animation-delay:${delay}ms">
+      <div class="member-avatar" style="background:${color}">${initial}</div>
+      <div style="min-width:0">
+        <div class="member-name">${reg.name}</div>
+        <div class="member-status">${statusTxt}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.innerHTML = `<div class="members-grid">${chips}</div>`;
+}
+
+// ─────────────────────────────────────────
+// REGISTER
+// ─────────────────────────────────────────
+function openReg(tripId, title) {
+  document.getElementById('regTripId').value  = tripId;
+  document.getElementById('regModalTitle').innerHTML =
+    `<i class="bi bi-person-check-fill"></i> ลงชื่อ: ${title}`;
+  document.getElementById('regName').value  = '';
+  document.getElementById('regEmail').value = '';
+  document.getElementById('regPhone').value = '';
+  document.getElementById('regNote').value  = '';
+  document.getElementById('regErr').classList.add('d-none');
+  document.getElementById('regSuccessBox').classList.add('d-none');
+  document.getElementById('regFormBox').classList.remove('d-none');
+  document.getElementById('regFooter').classList.remove('d-none');
+  openModal('regModal');
+}
+
+async function submitReg() {
+  const tripId = document.getElementById('regTripId').value;
+  const name   = document.getElementById('regName').value.trim();
+  const email  = document.getElementById('regEmail').value.trim();
+  const phone  = document.getElementById('regPhone').value.trim();
+  const note   = document.getElementById('regNote').value.trim();
+
+  if (!name) {
+    document.getElementById('regErr').textContent = 'กรุณากรอกชื่อเล่น';
+    document.getElementById('regErr').classList.remove('d-none');
+    return;
+  }
+
+  // ANIMATION 4: success state on modal confirm button
+  const confirmBtn = document.querySelector('#regFooter .btn-primary');
+
+  showLoad(true, 'กำลังลงชื่อ...');
+  const r = await api('register', { tripId, name, email, phone, note });
+  showLoad(false);
+
+  if (r.success) {
+    // Flash button to success before showing box
+    if (confirmBtn) {
+      confirmBtn.classList.add('btn-reg-success');
+      const icon = confirmBtn.querySelector('.reg-check-icon');
+      if (icon) icon.style.display = 'inline-block';
+    }
+
+    setTimeout(() => {
+      document.getElementById('regFormBox').classList.add('d-none');
+      document.getElementById('regFooter').classList.add('d-none');
+      const succEl = document.getElementById('regSuccessBox');
+      succEl.classList.remove('d-none');
+      document.getElementById('regSuccessMsg').innerHTML =
+        `ลงชื่อเรียบร้อยแล้ว <strong>${name}</strong>!` +
+        (email ? `<br>ส่งอีเมลยืนยันไปที่ <b>${email}</b> แล้ว` : '') +
+        `<br><small class="text-muted mt-1 d-block">หากมีค่าใช้จ่าย กรุณาชำระผ่าน QR PromptPay ในหน้าทริป</small>`;
+      toast('ลงชื่อสำเร็จ 🎉', 'success');
+    // reset members cache so list refreshes
+    delete _membersLoaded[tripId];
+    }, 400);
+
+    setTimeout(() => showDetail(tripId), 1800);
+  } else {
+    document.getElementById('regErr').textContent = r.message;
+    document.getElementById('regErr').classList.remove('d-none');
+  }
+}
+
+// ─────────────────────────────────────────
+// ADMIN TRIP FORM
+// ─────────────────────────────────────────
+function openAddTrip() {
+  document.getElementById('fTripId').value = '';
+  document.getElementById('tripFormTitle').innerHTML = '<i class="bi bi-plus-circle-fill"></i> สร้างทริปใหม่';
+  document.getElementById('tripFormBtn').textContent = 'บันทึกทริป';
+  ['fTitle','fLoc','fDesc','fMapUrl'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('fCat').value   = 'ท่องเที่ยว';
+  document.getElementById('fDate').value  = '';
+  document.getElementById('fTime').value  = '';
+  document.getElementById('fPrice').value = '0';
+  document.getElementById('fSlots').value = '0';
+  document.getElementById('mainPreviewBox').innerHTML = '<i class="bi bi-image-fill"></i><p class="mb-0 small">คลิกอัปโหลดรูปปก</p>';
+  document.getElementById('extraPreviews').innerHTML  = '';
+  document.getElementById('qrPreview').classList.add('d-none');
+  extraImgFiles = [];
+  qrFileObj     = null;
+  openModal('tripFormModal');
+}
+
+function openEditTrip(t) {
+  document.getElementById('fTripId').value = t.tripId;
+  document.getElementById('tripFormTitle').innerHTML = '<i class="bi bi-pencil-fill"></i> แก้ไขทริป';
+  document.getElementById('tripFormBtn').textContent = 'บันทึกการแก้ไข';
+  document.getElementById('fTitle').value = t.title || '';
+  document.getElementById('fCat').value   = t.category || 'ท่องเที่ยว';
+  document.getElementById('fDate').value  = t.date || '';
+  document.getElementById('fTime').value  = t.time || '';
+  document.getElementById('fLoc').value   = t.location || '';
+  document.getElementById('fMapUrl').value= t.mapUrl || '';
+  document.getElementById('fPrice').value = t.price || 0;
+  document.getElementById('fSlots').value = t.maxSlots || 0;
+  document.getElementById('fDesc').value  = t.description || '';
+
+  if (t.mainImage) {
+    document.getElementById('mainPreviewBox').innerHTML =
+      `<img src="${t.mainImage}" style="max-height:100px;border-radius:8px">`;
+  }
+  if (t.payQrUrl) {
+    document.getElementById('qrPreviewImg').src = t.payQrUrl;
+    document.getElementById('qrPreview').classList.remove('d-none');
+  } else {
+    document.getElementById('qrPreview').classList.add('d-none');
+  }
+
+  document.getElementById('extraPreviews').innerHTML = '';
+  extraImgFiles = [];
+  qrFileObj     = null;
+  openModal('tripFormModal');
+}
+
+function previewMain(input) {
+  if (!input.files[0]) return;
+  const r = new FileReader();
+  r.onload = e => {
+    document.getElementById('mainPreviewBox').innerHTML =
+      `<img src="${e.target.result}" style="max-height:110px;border-radius:8px">`;
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function previewQr(input) {
+  if (!input.files[0]) return;
+  qrFileObj = input.files[0];
+  const r = new FileReader();
+  r.onload = e => {
+    document.getElementById('qrPreviewImg').src = e.target.result;
+    document.getElementById('qrPreview').classList.remove('d-none');
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function clearQr() {
+  qrFileObj = null;
+  document.getElementById('fQrFile').value = '';
+  document.getElementById('qrPreview').classList.add('d-none');
+}
+
+function addExtraPreviews(input) {
+  const container = document.getElementById('extraPreviews');
+  Array.from(input.files).forEach(file => {
+    extraImgFiles.push(file);
+    const r = new FileReader();
+    r.onload = e => {
+      const w = document.createElement('div');
+      w.className = 'img-thumb-wrap';
+      w.innerHTML = `<img src="${e.target.result}" class="img-thumb">`;
+      container.appendChild(w);
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+async function submitTripForm() {
+  const tripId  = document.getElementById('fTripId').value;
+  const title   = document.getElementById('fTitle').value.trim();
+  const cat     = document.getElementById('fCat').value;
+  const date    = document.getElementById('fDate').value;
+  const time    = document.getElementById('fTime').value;
+  const loc     = document.getElementById('fLoc').value.trim();
+  const mapUrl  = document.getElementById('fMapUrl').value.trim();
+  const price   = document.getElementById('fPrice').value;
+  const slots   = document.getElementById('fSlots').value;
+  const desc    = document.getElementById('fDesc').value.trim();
+  const mainFile= document.getElementById('fMainImg').files[0];
+
+  if (!title || !date) { toast('กรุณากรอกชื่อทริปและวันที่', 'error'); return; }
+
+  showLoad(true, 'กำลังบันทึก...');
+
+  let mainImage = '';
+  if (mainFile) {
+    const ur = await uploadFile(mainFile);
+    if (ur.success) mainImage = ur.url;
+  }
+
+  let payQrUrl = '';
+  if (qrFileObj) {
+    const qr = await uploadFile(qrFileObj);
+    if (qr.success) payQrUrl = qr.url;
+  }
+
+  let res;
+  if (tripId) {
+    res = await api('updateTrip', {
+      tripId, title, category:cat, date, time, location:loc,
+      mapUrl,
+      price: Number(price), maxSlots: Number(slots), description:desc,
+      ...(mainImage ? {mainImage} : {}),
+      ...(payQrUrl  ? {payQrUrl}  : {})
+    });
+  } else {
+    res = await api('addTrip', {
+      title, category:cat, date, time, location:loc,
+      mapUrl,
+      price: Number(price), maxSlots: Number(slots),
+      description:desc, mainImage, payQrUrl
+    });
+  }
+
+  if (res.success && extraImgFiles.length > 0) {
+    const targetId = tripId || res.tripId;
+    const urls = [];
+    for (const f of extraImgFiles) {
+      const ur = await uploadFile(f);
+      if (ur.success) urls.push(ur.url);
+    }
+    if (urls.length) await api('addTripImages', { tripId: targetId, urls });
+  }
+
+  showLoad(false);
+  if (res.success) {
+    bootstrap.Modal.getInstance(document.getElementById('tripFormModal'))?.hide();
+    toast(tripId ? 'แก้ไขทริปสำเร็จ ✅' : 'สร้างทริปสำเร็จ 🎉', 'success');
+    loadAdminTrips();
+    loadHome();
+  } else {
+    toast(res.message, 'error');
+  }
+}
+
+async function doToggleVisible(tripId, checkboxEl) {
+  // ถ้าถูกเรียกจาก checkbox ให้ disable ก่อนป้องกัน double-fire
+  if (checkboxEl) checkboxEl.disabled = true;
+
+  const r = await api('toggleVisible', { tripId });
+  if (r.success) {
+    toast(r.isVisible ? '👁️ เปิดแสดงทริปแล้ว' : '🔒 ซ่อนทริปแล้ว', 'info');
+    // ถ้าอยู่หน้า detail — reload detail
+    const detailPage = document.getElementById('page-detail');
+    if (detailPage && detailPage.classList.contains('active')) {
+      showDetail(tripId);
+    }
+    // update admin table ถ้าเปิดอยู่ โดยไม่ trigger onchange ซ้ำ
+    if (checkboxEl) {
+      checkboxEl.checked  = r.isVisible;
+      checkboxEl.disabled = false;
+      const lbl = checkboxEl.closest('td')?.querySelector('small');
+      if (lbl) lbl.textContent = r.isVisible ? 'แสดง' : 'ซ่อน';
+    } else {
+      loadAdminTrips();
+    }
+  } else {
+    if (checkboxEl) {
+      checkboxEl.checked  = !checkboxEl.checked; // revert
+      checkboxEl.disabled = false;
+    }
+    toast('เกิดข้อผิดพลาด', 'error');
+  }
+}
+
+async function doDeleteTrip(tripId) {
+  if (!confirm('ยืนยันลบทริปนี้? ข้อมูลรายชื่อจะถูกลบด้วย')) return;
+  const r = await api('deleteTrip', { tripId });
+  if (r.success) { toast('ลบทริปสำเร็จ', 'success'); showPage('trips'); loadHome(); }
+}
+
+async function uploadMoreImgs(input, tripId) {
+  if (!input.files.length) return;
+  showLoad(true, 'กำลังอัปโหลด...');
+  const urls = [];
+  for (const f of input.files) {
+    const r = await uploadFile(f);
+    if (r.success) urls.push(r.url);
+  }
+  if (urls.length) {
+    await api('addTripImages', { tripId, urls });
+    toast(`เพิ่ม ${urls.length} รูปสำเร็จ`, 'success');
+  }
+  showLoad(false);
+  showDetail(tripId);
+}
+
+async function doDeleteImg(imageId, tripId) {
+  if (!confirm('ลบรูปนี้?')) return;
+  const r = await api('deleteTripImage', { imageId });
+  if (r.success) { toast('ลบรูปสำเร็จ', 'success'); showDetail(tripId); }
+}
+
+// ─────────────────────────────────────────
+// ADMIN PAGE
+// ─────────────────────────────────────────
+async function loadAdminPage() {
+  document.getElementById('adminContent').innerHTML = `
+  <div class="admin-layout">
+    <div class="admin-side">
+      <div class="d-flex flex-row flex-md-column overflow-auto">
+        <button class="aside-btn active" id="aBtn-dash"  onclick="switchAdmin('dash',this)">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </button>
+        <button class="aside-btn" id="aBtn-trips" onclick="switchAdmin('trips',this)">
+          <i class="bi bi-calendar3-fill"></i> จัดการทริป
+        </button>
+        <button class="aside-btn" id="aBtn-regs"  onclick="switchAdmin('regs',this)">
+          <i class="bi bi-people-fill"></i> รายชื่อทั้งหมด
+        </button>
+      </div>
+    </div>
+    <div class="admin-body" id="adminBody">
+      <div class="text-center py-5">
+        <span style="font-size:2rem;display:block;animation:suitBounce 1.3s ease-in-out infinite">🧳</span>
+        <div style="width:26px;height:4px;border-radius:50%;background:rgba(124,58,237,.25);animation:suitShadow 1.3s ease-in-out infinite;margin:4px auto 8px"></div>
+        <div style="font-size:.8rem;color:var(--text-muted)">กำลังโหลด</div>
+      </div>
+    </div>
+  </div>`;
+  loadAdminDash();
+}
+
+function switchAdmin(tab, btn) {
+  document.querySelectorAll('.aside-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  switch(tab) {
+    case 'dash':  loadAdminDash();  break;
+    case 'trips': loadAdminTrips(); break;
+    case 'regs':  loadAdminAllRegs(); break;
+  }
+}
+
+async function loadAdminDash() {
+  const [tr, sr] = await Promise.all([ api('getTrips',{}), api('getStats',{}) ]);
+  const trips = tr.success ? tr.trips : [];
+  const stats = sr.success ? sr.stats : {};
+
+  const byStatus = { open:0, full:0, hidden:0 };
+  trips.forEach(t => {
+    const vis = t.isVisible === true || t.isVisible === 'TRUE' || t.isVisible === 'true';
+    if (!vis) byStatus.hidden++;
+    else if (t.isFull) byStatus.full++;
+    else byStatus.open++;
+  });
+
+  document.getElementById('adminBody').innerHTML = `
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h4 class="fw-700 mb-0">📊 Dashboard</h4>
+    <button class="btn btn-primary fw-600" onclick="openAddTrip()">
+      <i class="bi bi-plus-lg"></i> สร้างทริปใหม่
+    </button>
+  </div>
+
+  <div class="row g-3 mb-4">
+    ${[
+      {ico:'bi-calendar3-fill',c:'#7C3AED',bg:'#EDE9FE',n:trips.length,l:'ทริปทั้งหมด'},
+      {ico:'bi-check-circle-fill',c:'#059669',bg:'#D1FAE5',n:byStatus.open,l:'เปิดรับ'},
+      {ico:'bi-people-fill',c:'#D97706',bg:'#FEF3C7',n:stats.totalRegs||0,l:'ลงทะเบียนแล้ว'},
+      {ico:'bi-eye-slash-fill',c:'#6B7280',bg:'#F3F4F6',n:byStatus.hidden,l:'ซ่อนอยู่'},
+    ].map((s,i)=>`
+    <div class="col-6 col-md-3">
+      <div class="astat trip-card-anim" style="animation-delay:${i*80}ms">
+        <div class="astat-ico" style="background:${s.bg};color:${s.c}">
+          <i class="bi ${s.ico}"></i>
+        </div>
+        <div>
+          <div class="astat-num" id="adm-stat-${i}">0</div>
+          <div class="astat-lbl">${s.l}</div>
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12 col-md-6">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px">
+        <div class="fw-600 mb-2">ทริปแยกหมวดหมู่</div>
+        <div class="chart-wrap"><canvas id="chartCat"></canvas></div>
+      </div>
+    </div>
+    <div class="col-12 col-md-6">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:16px">
+        <div class="fw-600 mb-2">สถานะทริป</div>
+        <div class="chart-wrap"><canvas id="chartStatus"></canvas></div>
+      </div>
+    </div>
+  </div>`;
+
+  // ANIMATION 2: count-up admin stats
+  const vals = [trips.length, byStatus.open, stats.totalRegs||0, byStatus.hidden];
+  vals.forEach((v, i) => animateCount('adm-stat-' + i, v));
+
+  setTimeout(() => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    Chart.defaults.color = isDark ? '#8B7CF6' : '#6B7280';
+
+    const cats = ['ท่องเที่ยว','ปาร์ตี้ดื่ม','หมูกระทะ-ชาบู','จัดปีใหม่'];
+    new Chart(document.getElementById('chartCat'), {
+      type:'bar',
+      data:{
+        labels: cats.map(c => (CAT_EMOJI[c]||'') + ' ' + c),
+        datasets:[{ data: cats.map(c => trips.filter(t=>t.category===c).length),
+          backgroundColor:['#2563EB','#DC2626','#D97706','#7C3AED'], borderRadius:8 }]
+      },
+      options:{ responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}} }
+    });
+
+    new Chart(document.getElementById('chartStatus'), {
+      type:'doughnut',
+      data:{
+        labels:['เปิดรับ','เต็ม','ซ่อน'],
+        datasets:[{ data:[byStatus.open,byStatus.full,byStatus.hidden],
+          backgroundColor:['#059669','#D97706','#9CA3AF'] }]
+      },
+      options:{ responsive:true,maintainAspectRatio:false }
+    });
+  }, 80);
+}
+
+async function loadAdminTrips() {
+  const r = await api('getTrips', {});
+  const trips = r.success ? r.trips : [];
+
+  document.getElementById('adminBody').innerHTML = `
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h4 class="fw-700 mb-0">🗓️ จัดการทริป (${trips.length})</h4>
+    <button class="btn btn-primary fw-600" onclick="openAddTrip()">
+      <i class="bi bi-plus-lg"></i> สร้างทริปใหม่
+    </button>
+  </div>
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr>
+        <th>รูป</th><th>ชื่อทริป</th><th>หมวด</th><th>วันที่</th>
+        <th>ที่นั่ง</th><th>ราคา</th><th>สถานะ</th><th>จัดการ</th>
+      </tr></thead>
+      <tbody>
+        ${trips.map(t => {
+          const vis = t.isVisible === true || t.isVisible === 'TRUE' || t.isVisible === 'true';
+          const emoji = CAT_EMOJI[t.category]||'🌟';
+          const dateStr = t.date ? new Date(t.date).toLocaleDateString('th-TH',{month:'short',day:'numeric'}) : '-';
+          return `
+          <tr>
+            <td>${t.mainImage ? `<img src="${t.mainImage}">` : `<span style="font-size:1.8rem">${emoji}</span>`}</td>
+            <td><b>${t.title}</b></td>
+            <td>${emoji} ${t.category||'-'}</td>
+            <td>${dateStr}</td>
+            <td>${t.registeredCount||0}/${Number(t.maxSlots)||'∞'}</td>
+            <td>${Number(t.price||0)>0 ? '฿'+Number(t.price).toLocaleString() : 'ฟรี'}</td>
+            <td>
+              <label class="toggle-wrap">
+                <label class="toggle">
+                  <input type="checkbox" ${vis?'checked':''} onchange="doToggleVisible('${t.tripId}',this)">
+                  <span class="toggle-slider"></span>
+                </label>
+                <small>${vis?'แสดง':'ซ่อน'}</small>
+              </label>
+            </td>
+            <td>
+              <div class="d-flex gap-1">
+                <button class="btn btn-warning btn-sm py-0" onclick="showDetail('${t.tripId}')">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-outline-danger btn-sm py-0" onclick="doDeleteTrip('${t.tripId}')">
+                  <i class="bi bi-trash3"></i>
+                </button>
+              </div>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+async function loadAdminAllRegs() {
+  showLoad(true, 'กำลังโหลดรายชื่อ...');
+  const tr = await api('getTrips', {});
+  const trips = tr.success ? tr.trips : [];
+
+  let allRegs = [];
+  for (const t of trips) {
+    const rr = await api('getRegistrations', { tripId: t.tripId });
+    if (rr.success) allRegs.push(...rr.registrations.map(r => ({...r, tripTitle: t.title})));
+  }
+  allRegs.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  showLoad(false);
+
+  document.getElementById('adminBody').innerHTML = `
+  <h4 class="fw-700 mb-4">👥 รายชื่อทั้งหมด (${allRegs.length} คน)</h4>
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr>
+        <th>ชื่อ</th><th>ทริป</th><th>อีเมล</th><th>เบอร์</th>
+        <th>หมายเหตุ</th><th>สถานะชำระ</th><th>วันที่ลง</th>
+      </tr></thead>
+      <tbody>
+        ${allRegs.map(r=>`
+        <tr>
+          <td><b>${r.name}</b></td>
+          <td>${r.tripTitle||r.tripId}</td>
+          <td>${r.email||'-'}</td>
+          <td>${r.phone||'-'}</td>
+          <td>${r.note||'-'}</td>
+          <td>
+            <select class="form-select form-select-sm" style="width:130px"
+                    onchange="changePayStatus('${r.regId}',this.value)">
+              <option ${r.payStatus==='รอชำระเงิน'?'selected':''}>รอชำระเงิน</option>
+              <option ${r.payStatus==='ชำระแล้ว'?'selected':''}>ชำระแล้ว</option>
+              <option ${r.payStatus==='ยกเลิก'?'selected':''}>ยกเลิก</option>
+            </select>
+          </td>
+          <td>${new Date(r.createdAt).toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+async function openAdminRegs(tripId, title) {
+  showLoad(true, 'โหลดรายชื่อ...');
+  const r = await api('getRegistrations', { tripId });
+  showLoad(false);
+  if (!r.success) return;
+
+  const regs = r.registrations;
+  showPage('admin');
+
+  document.getElementById('adminBody').innerHTML = `
+  <button class="btn btn-outline-secondary btn-sm mb-3" onclick="loadAdminTrips()">
+    <i class="bi bi-arrow-left"></i> กลับ
+  </button>
+  <h4 class="fw-700 mb-3">👥 รายชื่อ: ${title} (${regs.length} คน)</h4>
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>เบอร์</th><th>หมายเหตุ</th><th>สถานะชำระ</th><th>วันที่ลง</th></tr></thead>
+      <tbody>
+        ${regs.map(r=>`
+        <tr>
+          <td><b>${r.name}</b></td>
+          <td>${r.email||'-'}</td>
+          <td>${r.phone||'-'}</td>
+          <td>${r.note||'-'}</td>
+          <td>
+            <select class="form-select form-select-sm" style="width:130px"
+                    onchange="changePayStatus('${r.regId}',this.value)">
+              <option ${r.payStatus==='รอชำระเงิน'?'selected':''}>รอชำระเงิน</option>
+              <option ${r.payStatus==='ชำระแล้ว'?'selected':''}>ชำระแล้ว</option>
+              <option ${r.payStatus==='ยกเลิก'?'selected':''}>ยกเลิก</option>
+            </select>
+          </td>
+          <td>${new Date(r.createdAt).toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+async function changePayStatus(regId, status) {
+  const r = await api('updatePayStatus', { regId, status });
+  if (r.success) toast('อัปเดตสถานะแล้ว', 'success');
+}
+
+// ─────────────────────────────────────────
+// LIGHTBOX
+// ─────────────────────────────────────────
+function openLb(imgs, idx) {
+  if (typeof imgs === 'string') imgs = JSON.parse(imgs.replace(/'/g,'"'));
+  lbImgs = imgs; lbIdx = idx;
+  updateLb();
+  document.getElementById('lightbox').classList.remove('d-none');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb() {
+  document.getElementById('lightbox').classList.add('d-none');
+  document.body.style.overflow = '';
+}
+function lbNav(d) {
+  lbIdx = (lbIdx + d + lbImgs.length) % lbImgs.length;
+  updateLb();
+}
+function updateLb() {
+  document.getElementById('lbImg').src = lbImgs[lbIdx];
+  document.getElementById('lbCnt').textContent = `${lbIdx+1} / ${lbImgs.length}`;
+}
+
+// ─────────────────────────────────────────
+// UPLOAD
+// ─────────────────────────────────────────
+async function uploadFile(file) {
+  return new Promise(resolve => {
+    const r = new FileReader();
+    r.onload = async e => {
+      const b64 = e.target.result.split(',')[1];
+      const res = await api('uploadImage', { base64:b64, mimeType:file.type, filename:file.name });
+      resolve(res);
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+// ─────────────────────────────────────────
+// DARK MODE
+// ─────────────────────────────────────────
+function toggleTheme() {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('tb_theme', next);
+  document.getElementById('themeIcon').className = next === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+}
+function loadTheme() {
+  const t = localStorage.getItem('tb_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+  const ic = document.getElementById('themeIcon');
+  if (ic) ic.className = t === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+}
+
+// ─────────────────────────────────────────
+// UI HELPERS
+// ─────────────────────────────────────────
+function openModal(id) {
+  const el = document.getElementById(id);
+  if (el) new bootstrap.Modal(el).show();
+}
+
+// ANIMATION 5: toast with slide-in/out
+function toast(msg, type = 'success') {
+  const icons = {
+    success: 'bi-check-circle-fill text-success',
+    error:   'bi-exclamation-circle-fill text-danger',
+    info:    'bi-info-circle-fill text-primary'
+  };
+  const wrap = document.getElementById('toast-wrap');
+  const div  = document.createElement('div');
+  div.className = `toast-item ${type}`;
+  div.innerHTML = `<i class="bi ${icons[type]||icons.success} fs-5"></i><div class="small flex-grow-1">${msg}</div>`;
+  wrap.appendChild(div);
+  // slide out before removing
+  setTimeout(() => {
+    div.classList.add('leaving');
+    div.addEventListener('animationend', () => div.remove(), { once: true });
+  }, 3200);
+}
+
+const LOAD_EMOJI = {
+  'กำลัง Login':     '🔑',
+  'กำลังลงชื่อ':     '✍️',
+  'กำลังบันทึก':     '💾',
+  'กำลังอัปโหลด':   '🖼️',
+  'โหลดรายชื่อ':     '👥',
+  'กำลังโหลดรายชื่อ':'👥',
+  'default':          '🧳',
+};
+
+function showLoad(show, txt = 'กำลังโหลด') {
+  const overlay = document.getElementById('loadingOverlay');
+  const txtEl   = document.getElementById('loadTxt');
+  const emoji   = document.getElementById('loadEmoji');
+  overlay.classList.toggle('d-none', !show);
+  if (show) {
+    txtEl.textContent = txt;
+    const key = Object.keys(LOAD_EMOJI).find(k => txt.startsWith(k)) || 'default';
+    emoji.textContent = LOAD_EMOJI[key];
+  }
+}
+</script>
+</body>
+</html>
