@@ -1272,7 +1272,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
 // Trip Party - Frontend JS v3 + Animations
 // ============================================================
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbwgnJcbHss0jKn9qLVaWesXumge7akoO9lmnG-9f5GSLi4eGKYRvFI4caRRprdygfLh/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
+const API_URL = 'https://script.google.com/macros/s/AKfycbyYikTcMK98EWnssIbrZsTNAHDFnst1sL8_eQot_ZhbR1EBsPvQ4LAQJ_lEhzuwlDtD/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
 
 // ── State ──
 let adminToken  = null;
@@ -1291,6 +1291,15 @@ let lbImgs = [], lbIdx = 0;
 document.addEventListener('DOMContentLoaded', () => {
   loadTheme();
   restoreAdmin();
+
+  // GitHub Pages SPA redirect trick — อ่าน redirect จาก 404.html
+  const redirect = sessionStorage.getItem('gh_redirect');
+  if (redirect) {
+    sessionStorage.removeItem('gh_redirect');
+    const params = new URLSearchParams(redirect.split('?')[1] || '');
+    const tripId = params.get('trip');
+    if (tripId) { showDetail(tripId); return; }
+  }
 
   // ถ้ามี ?trip=xxx ใน URL → เปิดทริปนั้นตรงๆ เลย
   const params = new URLSearchParams(window.location.search);
@@ -1696,11 +1705,11 @@ function renderDetail(t) {
 
   // ANIMATION 4: CTA button with id for pulse
   const ctaBtn = !visible
-    ? `<div class="alert alert-secondary small">🔒 ทริปนี้ปิดรับสมัครชั่วคราว</div>`
+    ? `<div class="alert alert-secondary small">🔒 ทริปนี้ปิดแล้ว</div>`
     : isFull
     ? `<div class="alert alert-warning small">⚠️ ทริปเต็มแล้ว (${cur}/${max} คน)</div>`
     : `<button class="btn btn-primary w-100 fw-600 py-2" id="mainRegBtn"
-         onclick="openReg('${t.tripId}','${t.title.replace(/'/g,"\\'")}',${hasCostTrip})">
+         onclick="openReg('${t.tripId}','${t.title.replace(/'/g,"\\'")}',${hasCostTrip},${!!t.payQrUrl})">
         <i class="bi bi-person-check-fill"></i>
         <span class="reg-btn-txt"> ลงชื่อเข้าร่วมทริปนี้</span>
         <i class="bi bi-check-lg reg-check-icon"></i>
@@ -1878,12 +1887,12 @@ function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
   const priceStr = price > 0 ? `฿${Number(price).toLocaleString()}` : 'จ่ายเอง';
 
   const msg = [
-    '🧳 ชวนเที่ยว! ' + title,
+    '🧳 ' + title,
     '📅 ' + dateStr + (time ? ' เวลา ' + time : ''),
     '📍 ' + (location || 'TBA'),
     '💰 ' + priceStr,
     '',
-    '👇 ถ้าไปด้วยลงชื่อได้ที่นี่',
+    '👇 ลงชื่อได้ที่นี่',
     url,
   ].join('\n');
 
@@ -2025,9 +2034,15 @@ function clearSlip() {
 // ─────────────────────────────────────────
 // REGISTER
 // ─────────────────────────────────────────
-function openReg(tripId, title, hasCost) {
-  document.getElementById('regTripId').value     = tripId;
-  document.getElementById('regTripHasCost').value= hasCost ? '1' : '0';
+async function openReg(tripId, title, hasCostHint) {
+  // ถ้าไม่แน่ใจ hasCost ให้ดึงข้อมูลทริปมาเช็ค payQrUrl
+  let hasCost = hasCostHint;
+  if (hasCost === undefined || hasCost === null) {
+    const r = await api('getTrip', { tripId });
+    hasCost = r.success ? (Number(r.trip.price||0) > 0 && !!r.trip.payQrUrl) : false;
+  }
+  document.getElementById('regTripId').value      = tripId;
+  document.getElementById('regTripHasCost').value = hasCost ? '1' : '0';
   document.getElementById('regModalTitle').innerHTML =
     `<i class="bi bi-person-check-fill"></i> ลงชื่อ: ${title}`;
   document.getElementById('regName').value  = '';
@@ -2039,8 +2054,7 @@ function openReg(tripId, title, hasCost) {
   document.getElementById('regFormBox').classList.remove('d-none');
   document.getElementById('regFooter').classList.remove('d-none');
   // แสดง slip upload เฉพาะทริปที่มีค่าใช้จ่าย
-  const slipBox = document.getElementById('regSlipBox');
-  slipBox.classList.toggle('d-none', !hasCost);
+  document.getElementById('regSlipBox').classList.toggle('d-none', !hasCost);
   clearSlip();
   openModal('regModal');
 }
@@ -2532,7 +2546,7 @@ async function loadAdminAllRegs() {
     <table class="adm-table">
       <thead><tr>
         <th>ชื่อ</th><th>ทริป</th><th>อีเมล</th><th>เบอร์</th>
-        <th>หมายเหตุ</th><th>สลิป</th><th>สถานะชำระ</th><th>วันที่ลง</th>
+        <th>หมายเหตุ</th><th>สลิป</th><th>สถานะชำระ</th><th>วันที่ลง</th><th></th>
       </tr></thead>
       <tbody>
         ${allRegs.map(r=>`
@@ -2554,6 +2568,13 @@ async function loadAdminAllRegs() {
             </select>
           </td>
           <td>${new Date(r.createdAt).toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+          <td>
+            <button class="btn btn-outline-danger btn-sm py-0 px-2"
+                    onclick="doDeleteReg('${r.regId}','${r.name}',null,null)"
+                    title="ลบรายชื่อ">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </td>
         </tr>`).join('')}
       </tbody>
     </table>
@@ -2576,7 +2597,7 @@ async function openAdminRegs(tripId, title) {
   <h4 class="fw-700 mb-3">👥 รายชื่อ: ${title} (${regs.length} คน)</h4>
   <div class="adm-table-wrap">
     <table class="adm-table">
-      <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>เบอร์</th><th>หมายเหตุ</th><th>สลิป</th><th>สถานะชำระ</th><th>วันที่ลง</th></tr></thead>
+      <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>เบอร์</th><th>หมายเหตุ</th><th>สลิป</th><th>สถานะชำระ</th><th>วันที่ลง</th><th></th></tr></thead>
       <tbody>
         ${regs.map(r=>`
         <tr>
@@ -2596,10 +2617,34 @@ async function openAdminRegs(tripId, title) {
             </select>
           </td>
           <td>${new Date(r.createdAt).toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+          <td>
+            <button class="btn btn-outline-danger btn-sm py-0 px-2"
+                    onclick="doDeleteReg('${r.regId}','${r.name}','${tripId}','${title.replace(/'/g,"\\'")}')"
+                    title="ลบรายชื่อ">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </td>
         </tr>`).join('')}
       </tbody>
     </table>
   </div>`;
+}
+
+async function doDeleteReg(regId, name, tripId, tripTitle) {
+  if (!confirm(`ลบ "${name}" ออกจากรายชื่อ?\nไม่สามารถย้อนกลับได้`)) return;
+  const r = await api('deleteRegistration', { regId });
+  if (r.success) {
+    toast(`ลบ ${name} สำเร็จ`, 'success');
+    // refresh ตารางที่กำลังแสดงอยู่
+    if (tripId) {
+      openAdminRegs(tripId, tripTitle);
+    } else {
+      loadAdminAllRegs();
+    }
+    delete _membersLoaded[tripId]; // reset members cache
+  } else {
+    toast('ลบไม่สำเร็จ', 'error');
+  }
 }
 
 async function changePayStatus(regId, status) {
