@@ -569,7 +569,58 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
 }
 [data-theme="dark"] .reg-success{background:linear-gradient(135deg,#1E1045,#0A2A1A)}
 
-/* ─── Google Maps button ─── */
+/* ─── Payment toggle in form ─── */
+.payment-toggle-box {
+  background: var(--bg-section);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+.payment-toggle-box.has-cost {
+  border-color: var(--primary);
+  background: var(--primary-l);
+}
+.price-fields { display: none; margin-top: 14px; }
+.price-fields.show { display: block; }
+
+/* ─── Slip upload ─── */
+.slip-upload-box {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--ease);
+  color: var(--text-muted);
+}
+.slip-upload-box:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-l); }
+.slip-preview-wrap { margin-top: 10px; }
+.slip-preview-img {
+  max-width: 100%; max-height: 220px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--border);
+  object-fit: contain;
+  display: block; margin: 0 auto;
+}
+.slip-status-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px; border-radius: 50px;
+  font-size: .78rem; font-weight: 600;
+}
+.slip-status-badge.pending  { background: #FEF3C7; color: #B45309; }
+.slip-status-badge.uploaded { background: #D1FAE5; color: #065F46; }
+.slip-status-badge.approved { background: #EDE9FE; color: #6D28D9; }
+[data-theme="dark"] .slip-status-badge.pending  { background: #451A03; color: #FDE68A; }
+[data-theme="dark"] .slip-status-badge.uploaded { background: #064E3B; color: #6EE7B7; }
+[data-theme="dark"] .slip-status-badge.approved { background: #2D1F5E; color: #C4B5FD; }
+
+/* ─── Admin slip viewer ─── */
+.slip-thumb {
+  width: 60px; height: 60px; object-fit: cover;
+  border-radius: 6px; border: 1px solid var(--border);
+  cursor: pointer; transition: opacity .2s;
+}
+.slip-thumb:hover { opacity: .8; }
 .maps-btn {
   display:inline-flex;align-items:center;gap:7px;
   background:#1A73E8;color:#fff;border:none;
@@ -836,7 +887,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
       </div>
       <div class="container hero-content">
         <div class="hero-eyebrow">✨ ชวนกันไปสนุก</div>
-        <h1 class="hero-title">ทริปสนุกจากกลุ่ม Winter Wonder<br>มาเที่ยวด้วยกัน!</h1>
+        <h1 class="hero-title">ทริปจากกลุ่ม Winter Wonder</h1>
         <p class="hero-sub">ถ้าไป กดลงชื่อ แล้วไปด้วยกัน</p>
         <div class="cat-pills">
           <button class="cat-pill active" onclick="filterHomeCat('')">🌟 ทั้งหมด</button>
@@ -987,11 +1038,32 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
             <label class="form-label">เบอร์โทรศัพท์ <span class="text-muted">(ไม่บังคับ)</span></label>
             <input type="tel" class="form-control" id="regPhone" placeholder="08x-xxx-xxxx">
           </div>
-          <div class="mb-2">
+          <div class="mb-3">
             <label class="form-label">หมายเหตุ <span class="text-muted">(ไม่บังคับ)</span></label>
             <input type="text" class="form-control" id="regNote" placeholder="เช่น มีอาหารแพ้, จำนวนคนที่มา">
           </div>
+          <!-- ✅ Slip upload — แสดงเฉพาะทริปที่มีค่าใช้จ่าย -->
+          <div id="regSlipBox" class="d-none">
+            <hr style="border-color:var(--border)">
+            <label class="form-label fw-600">
+              <i class="bi bi-receipt text-primary"></i>
+              หลักฐานการโอนเงิน
+            </label>
+            <p class="text-muted small mb-2">ถ่ายสลิปแล้วอัปโหลดเพื่อให้ Admin ตรวจสอบ</p>
+            <div class="slip-upload-box" onclick="document.getElementById('regSlipFile').click()">
+              <input type="file" id="regSlipFile" class="d-none" accept="image/*" onchange="previewSlip(this)">
+              <i class="bi bi-cloud-upload fs-3 d-block mb-1"></i>
+              <span class="small">แตะเพื่ออัปโหลดสลิป</span>
+            </div>
+            <div id="regSlipPreview" class="slip-preview-wrap d-none">
+              <img id="regSlipImg" src="" class="slip-preview-img">
+              <button class="btn btn-outline-secondary btn-sm mt-2 w-100" onclick="clearSlip()">
+                <i class="bi bi-x"></i> เปลี่ยนรูป
+              </button>
+            </div>
+          </div>
           <input type="hidden" id="regTripId">
+          <input type="hidden" id="regTripHasCost" value="0">
         </div>
       </div>
       <div class="modal-footer" id="regFooter">
@@ -1045,21 +1117,72 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
             <input type="time" class="form-control" id="fTime">
           </div>
 
-          <!-- สถานที่ / ราคา / จำนวน -->
+          <!-- สถานที่ / จำนวน -->
           <div class="col-12 col-md-6">
             <label class="form-label">สถานที่ / จุดนัดพบ</label>
             <input type="text" class="form-control" id="fLoc" placeholder="เช่น ลานจอดรถ Big C เชียงใหม่">
           </div>
           <div class="col-6 col-md-3">
-            <label class="form-label">ค่าใช้จ่าย (บาท)</label>
-            <input type="number" class="form-control" id="fPrice" min="0" value="0" placeholder="0 = ฟรี">
-          </div>
-          <div class="col-6 col-md-3">
             <label class="form-label">จำนวนที่รับ</label>
             <input type="number" class="form-control" id="fSlots" min="0" value="0" placeholder="0 = ไม่จำกัด">
           </div>
+          <div class="col-6 col-md-3"></div>
 
-          <!-- ✅ Google Maps Link -->
+          <!-- ✅ Payment section -->
+          <div class="col-12">
+            <div class="payment-toggle-box" id="paymentToggleBox">
+
+              <!-- Toggle: มีค่าใช้จ่าย -->
+              <div class="form-check form-switch d-flex align-items-center gap-3 mb-0">
+                <input class="form-check-input" type="checkbox" id="fHasCost" role="switch"
+                       style="width:2.4em;height:1.3em;cursor:pointer"
+                       onchange="togglePaymentFields(this.checked)">
+                <label class="form-check-label fw-600" for="fHasCost" style="cursor:pointer;font-size:.95rem">
+                  💰 มีค่าใช้จ่าย (ต้องโอนเงินก่อน)
+                </label>
+              </div>
+
+              <!-- ถ้าไม่มีค่าใช้จ่าย — ระบุจำนวนเงินอ้างอิง -->
+              <div id="freeAmountBox" class="mt-3">
+                <label class="form-label text-muted small mb-1">จำนวนเงินโดยประมาณ <span class="text-muted">(ไม่บังคับ — ระบุเพื่ออ้างอิง)</span></label>
+                <div class="input-group" style="max-width:220px">
+                  <span class="input-group-text" style="background:var(--bg-section);border-color:var(--border)">฿</span>
+                  <input type="number" class="form-control" id="fFreeAmount" min="0" placeholder="เช่น 300">
+                </div>
+              </div>
+
+              <!-- ถ้ามีค่าใช้จ่าย — กรอกราคา + QR -->
+              <div class="price-fields" id="priceFields">
+                <div class="row g-3 mt-0">
+                  <div class="col-12 col-sm-6">
+                    <label class="form-label fw-600">จำนวนเงิน (บาท) *</label>
+                    <div class="input-group">
+                      <span class="input-group-text" style="background:var(--bg-section);border-color:var(--border)">฿</span>
+                      <input type="number" class="form-control" id="fPrice" min="1" value="" placeholder="เช่น 500">
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-600">
+                      <i class="bi bi-qr-code text-primary"></i>
+                      QR Code PromptPay สำหรับชำระเงิน
+                    </label>
+                    <div class="d-flex gap-3 align-items-start flex-wrap">
+                      <div class="upload-area flex-grow-1" onclick="document.getElementById('fQrFile').click()">
+                        <input type="file" id="fQrFile" class="d-none" accept="image/*" onchange="previewQr(this)">
+                        <i class="bi bi-qr-code-scan"></i>
+                        <p class="mb-0 small">อัปโหลด QR Code PromptPay</p>
+                      </div>
+                      <div id="qrPreview" class="d-none">
+                        <img id="qrPreviewImg" src="" style="width:100px;height:100px;object-fit:contain;border-radius:8px;border:2px solid var(--border)">
+                        <button class="btn btn-outline-danger btn-sm d-block mt-1" onclick="clearQr()">ลบ QR</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
           <div class="col-12">
             <label class="form-label">
               <i class="bi bi-geo-alt-fill" style="color:#1A73E8"></i>
@@ -1082,25 +1205,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
             <label class="form-label">รายละเอียด / กำหนดการ</label>
             <textarea class="form-control" id="fDesc" rows="4"
               placeholder="คำอธิบาย กำหนดการ สิ่งที่ต้องเตรียม ฯลฯ"></textarea>
-          </div>
-
-          <!-- QR PromptPay -->
-          <div class="col-12">
-            <label class="form-label">
-              <i class="bi bi-qr-code text-primary"></i>
-              QR Code PromptPay สำหรับชำระเงิน
-            </label>
-            <div class="d-flex gap-3 align-items-start flex-wrap">
-              <div class="upload-area flex-grow-1" onclick="document.getElementById('fQrFile').click()">
-                <input type="file" id="fQrFile" class="d-none" accept="image/*" onchange="previewQr(this)">
-                <i class="bi bi-qr-code-scan"></i>
-                <p class="mb-0 small">อัปโหลด QR Code PromptPay</p>
-              </div>
-              <div id="qrPreview" class="d-none">
-                <img id="qrPreviewImg" src="" style="width:100px;height:100px;object-fit:contain;border-radius:8px;border:2px solid var(--border)">
-                <button class="btn btn-outline-danger btn-sm d-block mt-1" onclick="clearQr()">ลบ QR</button>
-              </div>
-            </div>
           </div>
 
           <!-- รูปหลัก -->
@@ -1168,7 +1272,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
 // Trip Party - Frontend JS v3 + Animations
 // ============================================================
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbzjwY2o6IThG05fhDfGY_ytsdOqWbvmIWbl8U2u1w0K_Ac9bg1175CmdETAmV1kuQYJ/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
+const API_URL = 'https://script.google.com/macros/s/AKfycbwgnJcbHss0jKn9qLVaWesXumge7akoO9lmnG-9f5GSLi4eGKYRvFI4caRRprdygfLh/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
 
 // ── State ──
 let adminToken  = null;
@@ -1187,7 +1291,15 @@ let lbImgs = [], lbIdx = 0;
 document.addEventListener('DOMContentLoaded', () => {
   loadTheme();
   restoreAdmin();
-  loadHome();
+
+  // ถ้ามี ?trip=xxx ใน URL → เปิดทริปนั้นตรงๆ เลย
+  const params = new URLSearchParams(window.location.search);
+  const tripId = params.get('trip');
+  if (tripId) {
+    showDetail(tripId);
+  } else {
+    loadHome();
+  }
 });
 
 // ─────────────────────────────────────────
@@ -1411,9 +1523,12 @@ function tripCardHTML(t, idx = 0) {
     ? `<img class="trip-card-img" src="${t.mainImage}" alt="${t.title}" loading="lazy">`
     : `<div class="trip-card-img-ph">${emoji}</div>`;
 
-  const priceTag = Number(t.price||0) > 0
+  const hasCostTrip = Number(t.price||0) > 0 && !!t.payQrUrl;
+  const priceTag = hasCostTrip
     ? `<span class="price-tag">฿${Number(t.price).toLocaleString()}</span>`
-    : `<span class="price-free">จ่ายเอง จ่ายใครจ่ายมัน!</span>`;
+    : Number(t.price||0) > 0
+      ? `<span class="price-free">จ่ายเอง <span style="font-size:.85em;opacity:.8">(~฿${Number(t.price).toLocaleString()})</span></span>`
+      : `<span class="price-free">จ่ายเอง</span>`;
 
   // ANIMATION 1: stagger delay per card index
   const delay = idx * 80;
@@ -1531,17 +1646,23 @@ function renderDetail(t) {
     ? new Date(t.date).toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric',weekday:'long'})
     : 'TBA';
 
-  const priceDisplay = Number(t.price||0) > 0
+  const hasCostTrip = Number(t.price||0) > 0 && !!t.payQrUrl;
+  const priceDisplay = hasCostTrip
     ? `<div class="info-item">
         <div class="lbl">💰 ค่าใช้จ่าย</div>
         <div class="val" style="color:var(--primary);font-size:1.1rem">฿${Number(t.price).toLocaleString()}</div>
        </div>`
-    : `<div class="info-item">
-        <div class="lbl">💰 ค่าใช้จ่าย</div>
-        <div class="val" style="color:var(--success)">ฟรี! 🎉</div>
-       </div>`;
+    : Number(t.price||0) > 0
+      ? `<div class="info-item">
+          <div class="lbl">💰 ค่าใช้จ่าย</div>
+          <div class="val" style="color:var(--success)">จ่ายเอง <span style="font-size:.85em;color:var(--text-muted)">(~฿${Number(t.price).toLocaleString()})</span></div>
+         </div>`
+      : `<div class="info-item">
+          <div class="lbl">💰 ค่าใช้จ่าย</div>
+          <div class="val" style="color:var(--success)">จ่ายเอง</div>
+         </div>`;
 
-  const qrSection = Number(t.price||0) > 0 ? `
+  const qrSection = hasCostTrip ? `
   <div class="detail-card">
     <h5><i class="bi bi-qr-code text-primary"></i> ชำระเงิน PromptPay</h5>
     <div class="qr-box">
@@ -1579,7 +1700,7 @@ function renderDetail(t) {
     : isFull
     ? `<div class="alert alert-warning small">⚠️ ทริปเต็มแล้ว (${cur}/${max} คน)</div>`
     : `<button class="btn btn-primary w-100 fw-600 py-2" id="mainRegBtn"
-         onclick="openReg('${t.tripId}','${t.title.replace(/'/g,"\\'")}')">
+         onclick="openReg('${t.tripId}','${t.title.replace(/'/g,"\\'")}',${hasCostTrip})">
         <i class="bi bi-person-check-fill"></i>
         <span class="reg-btn-txt"> ลงชื่อเข้าร่วมทริปนี้</span>
         <i class="bi bi-check-lg reg-check-icon"></i>
@@ -1688,7 +1809,7 @@ function renderDetail(t) {
       <div class="col-12 col-lg-4">
         <div class="detail-card">
           ${ctaBtn}
-          ${!isFull && visible ? `<p class="text-muted small text-center mt-2 mb-0">ไม่ต้องสมัครสมาชิก ใส่ชื่อเล่นได้เลย</p>` : ''}
+          ${!isFull && visible ? `<p class="text-muted small text-center mt-2 mb-0">ถ้าไปก็ลงชื่อได้เลย</p>` : ''}
           <hr style="margin:12px 0;border-color:var(--border)">
           <button class="btn btn-outline-secondary btn-sm w-100"
             onclick="copyTripLink('${t.tripId}','${t.title.replace(/'/g,"\\'")}',this)">
@@ -1724,8 +1845,9 @@ function renderDetail(t) {
 // SHARE / COPY LINK
 // ─────────────────────────────────────────
 function getTripUrl(tripId) {
-  // URL ของ GAS web app + hash เพื่อให้กดแล้วเปิดทริปตรงๆ
-  return API_URL + '#trip=' + tripId;
+  // ใช้ URL ของหน้าเว็บปัจจุบัน (GitHub Pages) + hash
+  const base = window.location.href.split('#')[0].split('?')[0];
+  return base + '?trip=' + tripId;
 }
 
 function copyTripLink(tripId, title, btnEl) {
@@ -1753,7 +1875,7 @@ function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
   const dateStr = date ? new Date(date).toLocaleDateString('th-TH', {
     year:'numeric', month:'long', day:'numeric', weekday:'long'
   }) : 'TBA';
-  const priceStr = price > 0 ? `฿${Number(price).toLocaleString()}` : 'ฟรี';
+  const priceStr = price > 0 ? `฿${Number(price).toLocaleString()}` : 'จ่ายเอง';
 
   const msg = [
     '🧳 ชวนเที่ยว! ' + title,
@@ -1761,7 +1883,7 @@ function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
     '📍 ' + (location || 'TBA'),
     '💰 ' + priceStr,
     '',
-    '👇 ลงชื่อได้ที่นี่',
+    '👇 ถ้าไปด้วยลงชื่อได้ที่นี่',
     url,
   ].join('\n');
 
@@ -1860,10 +1982,52 @@ async function toggleMembers(tripId) {
 }
 
 // ─────────────────────────────────────────
+// PAYMENT TOGGLE (Admin form)
+// ─────────────────────────────────────────
+function togglePaymentFields(hasCost) {
+  const box        = document.getElementById('paymentToggleBox');
+  const fields     = document.getElementById('priceFields');
+  const freeBox    = document.getElementById('freeAmountBox');
+  box.classList.toggle('has-cost', hasCost);
+  fields.classList.toggle('show', hasCost);
+  if (freeBox) freeBox.style.display = hasCost ? 'none' : '';
+  if (!hasCost) {
+    document.getElementById('fPrice').value = '';
+    clearQr();
+  }
+}
+
+// ─────────────────────────────────────────
+// SLIP UPLOAD (User form)
+// ─────────────────────────────────────────
+let slipFileObj = null;
+
+function previewSlip(input) {
+  if (!input.files[0]) return;
+  slipFileObj = input.files[0];
+  const r = new FileReader();
+  r.onload = e => {
+    document.getElementById('regSlipImg').src = e.target.result;
+    document.getElementById('regSlipPreview').classList.remove('d-none');
+    document.querySelector('#regSlipBox .slip-upload-box').style.display = 'none';
+  };
+  r.readAsDataURL(input.files[0]);
+}
+
+function clearSlip() {
+  slipFileObj = null;
+  document.getElementById('regSlipFile').value = '';
+  document.getElementById('regSlipImg').src = '';
+  document.getElementById('regSlipPreview').classList.add('d-none');
+  document.querySelector('#regSlipBox .slip-upload-box').style.display = '';
+}
+
+// ─────────────────────────────────────────
 // REGISTER
 // ─────────────────────────────────────────
-function openReg(tripId, title) {
-  document.getElementById('regTripId').value  = tripId;
+function openReg(tripId, title, hasCost) {
+  document.getElementById('regTripId').value     = tripId;
+  document.getElementById('regTripHasCost').value= hasCost ? '1' : '0';
   document.getElementById('regModalTitle').innerHTML =
     `<i class="bi bi-person-check-fill"></i> ลงชื่อ: ${title}`;
   document.getElementById('regName').value  = '';
@@ -1874,15 +2038,20 @@ function openReg(tripId, title) {
   document.getElementById('regSuccessBox').classList.add('d-none');
   document.getElementById('regFormBox').classList.remove('d-none');
   document.getElementById('regFooter').classList.remove('d-none');
+  // แสดง slip upload เฉพาะทริปที่มีค่าใช้จ่าย
+  const slipBox = document.getElementById('regSlipBox');
+  slipBox.classList.toggle('d-none', !hasCost);
+  clearSlip();
   openModal('regModal');
 }
 
 async function submitReg() {
-  const tripId = document.getElementById('regTripId').value;
-  const name   = document.getElementById('regName').value.trim();
-  const email  = document.getElementById('regEmail').value.trim();
-  const phone  = document.getElementById('regPhone').value.trim();
-  const note   = document.getElementById('regNote').value.trim();
+  const tripId  = document.getElementById('regTripId').value;
+  const hasCost = document.getElementById('regTripHasCost').value === '1';
+  const name    = document.getElementById('regName').value.trim();
+  const email   = document.getElementById('regEmail').value.trim();
+  const phone   = document.getElementById('regPhone').value.trim();
+  const note    = document.getElementById('regNote').value.trim();
 
   if (!name) {
     document.getElementById('regErr').textContent = 'กรุณากรอกชื่อเล่น';
@@ -1890,35 +2059,38 @@ async function submitReg() {
     return;
   }
 
-  // ANIMATION 4: success state on modal confirm button
   const confirmBtn = document.querySelector('#regFooter .btn-primary');
-
   showLoad(true, 'กำลังลงชื่อ...');
-  const r = await api('register', { tripId, name, email, phone, note });
+
+  // อัปโหลดสลิปก่อน (ถ้ามี)
+  let slipUrl = '';
+  if (hasCost && slipFileObj) {
+    showLoad(true, 'กำลังอัปโหลดสลิป...');
+    const ur = await uploadFile(slipFileObj);
+    if (ur.success) slipUrl = ur.url;
+  }
+
+  const r = await api('register', { tripId, name, email, phone, note, slipUrl });
   showLoad(false);
 
   if (r.success) {
-    // Flash button to success before showing box
     if (confirmBtn) {
       confirmBtn.classList.add('btn-reg-success');
       const icon = confirmBtn.querySelector('.reg-check-icon');
       if (icon) icon.style.display = 'inline-block';
     }
-
     setTimeout(() => {
       document.getElementById('regFormBox').classList.add('d-none');
       document.getElementById('regFooter').classList.add('d-none');
-      const succEl = document.getElementById('regSuccessBox');
-      succEl.classList.remove('d-none');
+      document.getElementById('regSuccessBox').classList.remove('d-none');
       document.getElementById('regSuccessMsg').innerHTML =
         `ลงชื่อเรียบร้อยแล้ว <strong>${name}</strong>!` +
         (email ? `<br>ส่งอีเมลยืนยันไปที่ <b>${email}</b> แล้ว` : '') +
-        `<br><small class="text-muted mt-1 d-block">หากมีค่าใช้จ่าย กรุณาชำระผ่าน QR PromptPay ในหน้าทริป</small>`;
+        (hasCost && slipUrl ? `<br><span class="slip-status-badge uploaded mt-2"><i class="bi bi-check-circle-fill"></i> ส่งสลิปแล้ว รอ Admin ยืนยัน</span>` : '') +
+        (hasCost && !slipUrl ? `<br><small class="text-muted mt-1 d-block">⚠️ ยังไม่ได้แนบสลิป กรุณาส่งหลักฐานให้ Admin</small>` : '');
       toast('ลงชื่อสำเร็จ 🎉', 'success');
-    // reset members cache so list refreshes
-    delete _membersLoaded[tripId];
+      delete _membersLoaded[tripId];
     }, 400);
-
     setTimeout(() => showDetail(tripId), 1800);
   } else {
     document.getElementById('regErr').textContent = r.message;
@@ -1937,8 +2109,12 @@ function openAddTrip() {
   document.getElementById('fCat').value   = 'ท่องเที่ยว';
   document.getElementById('fDate').value  = '';
   document.getElementById('fTime').value  = '';
-  document.getElementById('fPrice').value = '0';
   document.getElementById('fSlots').value = '0';
+  // reset payment toggle
+  const cb = document.getElementById('fHasCost');
+  if (cb) { cb.checked = false; togglePaymentFields(false); }
+  document.getElementById('fPrice').value = '';
+  const fa = document.getElementById('fFreeAmount'); if (fa) fa.value = '';
   document.getElementById('mainPreviewBox').innerHTML = '<i class="bi bi-image-fill"></i><p class="mb-0 small">คลิกอัปโหลดรูปปก</p>';
   document.getElementById('extraPreviews').innerHTML  = '';
   document.getElementById('qrPreview').classList.add('d-none');
@@ -1957,7 +2133,12 @@ function openEditTrip(t) {
   document.getElementById('fTime').value  = t.time || '';
   document.getElementById('fLoc').value   = t.location || '';
   document.getElementById('fMapUrl').value= t.mapUrl || '';
-  document.getElementById('fPrice').value = t.price || 0;
+  const hasCost = Number(t.price || 0) > 0;
+  const cb = document.getElementById('fHasCost');
+  if (cb) { cb.checked = hasCost; togglePaymentFields(hasCost); }
+  document.getElementById('fPrice').value = hasCost ? (t.price || '') : '';
+  const fa = document.getElementById('fFreeAmount');
+  if (fa) fa.value = !hasCost && Number(t.price || 0) > 0 ? t.price : (hasCost ? '' : (t.price || ''));
   document.getElementById('fSlots').value = t.maxSlots || 0;
   document.getElementById('fDesc').value  = t.description || '';
 
@@ -2028,7 +2209,10 @@ async function submitTripForm() {
   const time    = document.getElementById('fTime').value;
   const loc     = document.getElementById('fLoc').value.trim();
   const mapUrl  = document.getElementById('fMapUrl').value.trim();
-  const price   = document.getElementById('fPrice').value;
+  const hasCost = document.getElementById('fHasCost')?.checked || false;
+  const price   = hasCost
+    ? (document.getElementById('fPrice').value || '0')
+    : (document.getElementById('fFreeAmount')?.value || '0');
   const slots   = document.getElementById('fSlots').value;
   const desc    = document.getElementById('fDesc').value.trim();
   const mainFile= document.getElementById('fMainImg').files[0];
@@ -2302,7 +2486,7 @@ async function loadAdminTrips() {
             <td>${emoji} ${t.category||'-'}</td>
             <td>${dateStr}</td>
             <td>${t.registeredCount||0}/${Number(t.maxSlots)||'∞'}</td>
-            <td>${Number(t.price||0)>0 ? '฿'+Number(t.price).toLocaleString() : 'ฟรี'}</td>
+            <td>${Number(t.price||0)>0 && t.payQrUrl ? '฿'+Number(t.price).toLocaleString() : Number(t.price||0)>0 ? 'จ่ายเอง (~฿'+Number(t.price).toLocaleString()+')' : 'จ่ายเอง'}</td>
             <td>
               <label class="toggle-wrap">
                 <label class="toggle">
@@ -2348,7 +2532,7 @@ async function loadAdminAllRegs() {
     <table class="adm-table">
       <thead><tr>
         <th>ชื่อ</th><th>ทริป</th><th>อีเมล</th><th>เบอร์</th>
-        <th>หมายเหตุ</th><th>สถานะชำระ</th><th>วันที่ลง</th>
+        <th>หมายเหตุ</th><th>สลิป</th><th>สถานะชำระ</th><th>วันที่ลง</th>
       </tr></thead>
       <tbody>
         ${allRegs.map(r=>`
@@ -2358,6 +2542,9 @@ async function loadAdminAllRegs() {
           <td>${r.email||'-'}</td>
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
+          <td>${r.slipUrl
+            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
+            : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
                     onchange="changePayStatus('${r.regId}',this.value)">
@@ -2389,7 +2576,7 @@ async function openAdminRegs(tripId, title) {
   <h4 class="fw-700 mb-3">👥 รายชื่อ: ${title} (${regs.length} คน)</h4>
   <div class="adm-table-wrap">
     <table class="adm-table">
-      <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>เบอร์</th><th>หมายเหตุ</th><th>สถานะชำระ</th><th>วันที่ลง</th></tr></thead>
+      <thead><tr><th>ชื่อ</th><th>อีเมล</th><th>เบอร์</th><th>หมายเหตุ</th><th>สลิป</th><th>สถานะชำระ</th><th>วันที่ลง</th></tr></thead>
       <tbody>
         ${regs.map(r=>`
         <tr>
@@ -2397,6 +2584,9 @@ async function openAdminRegs(tripId, title) {
           <td>${r.email||'-'}</td>
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
+          <td>${r.slipUrl
+            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
+            : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
                     onchange="changePayStatus('${r.regId}',this.value)">
