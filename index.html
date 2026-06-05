@@ -1272,7 +1272,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
 // Trip Party - Frontend JS v3 + Animations
 // ============================================================
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbyYikTcMK98EWnssIbrZsTNAHDFnst1sL8_eQot_ZhbR1EBsPvQ4LAQJ_lEhzuwlDtD/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
+const API_URL = 'https://script.google.com/macros/s/AKfycbzoGwDf-HlmFHoCE9X-uPO-PxYd6MN62q92sV5ujOE2hq8_kwDdp3CoAo981YzcpPHn/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
 
 // ── State ──
 let adminToken  = null;
@@ -1887,7 +1887,7 @@ function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
   const priceStr = price > 0 ? `฿${Number(price).toLocaleString()}` : 'จ่ายเอง';
 
   const msg = [
-    '🧳 ' + title,
+    '🧳 ชวนเที่ยว! ' + title,
     '📅 ' + dateStr + (time ? ' เวลา ' + time : ''),
     '📍 ' + (location || 'TBA'),
     '💰 ' + priceStr,
@@ -1949,8 +1949,6 @@ async function toggleMembers(tripId) {
   icon.className = 'bi bi-eye-slash';
   txtEl.textContent = 'ซ่อนรายชื่อ';
 
-  if (_membersLoaded[tripId]) return; // already fetched
-
   list.innerHTML = `<div class="members-empty">
     <span style="font-size:1.6rem;display:block;animation:suitBounce 1.3s ease-in-out infinite;margin-bottom:4px">🧳</span>
     <div style="width:22px;height:4px;border-radius:50%;background:rgba(124,58,237,.2);animation:suitShadow 1.3s ease-in-out infinite;margin:0 auto 8px"></div>
@@ -1971,18 +1969,14 @@ async function toggleMembers(tripId) {
   ];
 
   const chips = r.members.map((reg, i) => {
-    const initial   = (reg.name || '?')[0].toUpperCase();
-    const color     = AVATAR_COLORS[i % AVATAR_COLORS.length];
-    const paid      = reg.payStatus === 'ชำระแล้ว';
-    const cancelled = reg.payStatus === 'ยกเลิก';
-    const statusTxt = paid ? '✅ ชำระแล้ว' : cancelled ? '❌ ยกเลิก' : '⏳ รอชำระ';
-    const delay     = i * 35;
+    const initial = (reg.name || '?')[0].toUpperCase();
+    const color   = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const delay   = i * 35;
     return `
     <div class="member-chip" style="animation-delay:${delay}ms">
       <div class="member-avatar" style="background:${color}">${initial}</div>
       <div style="min-width:0">
         <div class="member-name">${reg.name}</div>
-        <div class="member-status">${statusTxt}</div>
       </div>
     </div>`;
   }).join('');
@@ -2567,7 +2561,7 @@ async function loadAdminAllRegs() {
               <option ${r.payStatus==='ยกเลิก'?'selected':''}>ยกเลิก</option>
             </select>
           </td>
-          <td>${new Date(r.createdAt).toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+          <td>${(()=>{ try { const d=new Date(r.createdAt); return isNaN(d)?'-':d.toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){return '-';} })()}</td>
           <td>
             <button class="btn btn-outline-danger btn-sm py-0 px-2"
                     onclick="doDeleteReg('${r.regId}','${r.name}',null,null)"
@@ -2616,7 +2610,7 @@ async function openAdminRegs(tripId, title) {
               <option ${r.payStatus==='ยกเลิก'?'selected':''}>ยกเลิก</option>
             </select>
           </td>
-          <td>${new Date(r.createdAt).toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+          <td>${(()=>{ try { const d=new Date(r.createdAt); return isNaN(d)?'-':d.toLocaleDateString('th-TH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){return '-';} })()}</td>
           <td>
             <button class="btn btn-outline-danger btn-sm py-0 px-2"
                     onclick="doDeleteReg('${r.regId}','${r.name}','${tripId}','${title.replace(/'/g,"\\'")}')"
