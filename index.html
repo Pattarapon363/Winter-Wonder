@@ -887,7 +887,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
       </div>
       <div class="container hero-content">
         <div class="hero-eyebrow">✨ ชวนกันไปสนุก</div>
-        <h1 class="hero-title">ทริปจากกลุ่ม Winter Wonder</h1>
+        <h1 class="hero-title">ทริปสนุกจากกลุ่ม Winter Wonder!</h1>
         <p class="hero-sub">ถ้าไป กดลงชื่อ แล้วไปด้วยกัน</p>
         <div class="cat-pills">
           <button class="cat-pill active" onclick="filterHomeCat('')">🌟 ทั้งหมด</button>
@@ -1312,6 +1312,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ─────────────────────────────────────────
+// FIX GOOGLE DRIVE URL — แปลง thumbnail → uc export view
+// ─────────────────────────────────────────
+function fixDriveUrl(url) {
+  if (!url) return url;
+  // แปลง thumbnail?id=xxx&sz=s1000 → uc?export=view&id=xxx
+  const m = url.match(/[?&]id=([^&]+)/);
+  if (url.includes('drive.google.com/thumbnail') && m) {
+    return 'https://drive.google.com/uc?export=view&id=' + m[1];
+  }
+  return url;
+}
+
+// ─────────────────────────────────────────
 // API
 // ─────────────────────────────────────────
 async function api(action, data = {}) {
@@ -1529,7 +1542,7 @@ function tripCardHTML(t, idx = 0) {
     : '<span class="badge-open">🟢 เปิดรับ</span>';
 
   const img = t.mainImage
-    ? `<img class="trip-card-img" src="${t.mainImage}" alt="${t.title}" loading="lazy">`
+    ? `<img class="trip-card-img" src="${fixDriveUrl(t.mainImage)}" alt="${t.title}" loading="lazy">`
     : `<div class="trip-card-img-ph">${emoji}</div>`;
 
   const hasCostTrip = Number(t.price||0) > 0 && !!t.payQrUrl;
@@ -1614,7 +1627,7 @@ async function showDetail(tripId) {
     </div>`;
 
   const r = await api('getTrip', { tripId });
-  if (!r.success) return;
+  if (!r.success) { showLoad(false); return; }
   renderDetail(r.trip);
 }
 
@@ -1627,7 +1640,7 @@ function renderDetail(t) {
   const isFull  = t.isFull;
   const pct     = max > 0 ? Math.min(100, Math.round(cur/max*100)) : 0;
 
-  const allImgs = [t.mainImage, ...(t.images||[]).map(i=>i.url)].filter(Boolean);
+  const allImgs = [t.mainImage, ...(t.images||[]).map(i=>i.url)].filter(Boolean).map(fixDriveUrl);
 
   // Gallery
   let gallery = '';
@@ -1676,7 +1689,7 @@ function renderDetail(t) {
     <h5><i class="bi bi-qr-code text-primary"></i> ชำระเงิน PromptPay</h5>
     <div class="qr-box">
       ${t.payQrUrl
-        ? `<img class="qr-img" src="${t.payQrUrl}" alt="QR PromptPay">
+        ? `<img class="qr-img" src="${fixDriveUrl(t.payQrUrl)}" alt="QR PromptPay">
            <p class="mt-2 small text-muted mb-0">สแกน QR Code เพื่อชำระเงิน ฿${Number(t.price).toLocaleString()}</p>
            <small class="text-muted">หลังโอนเงินกรุณาส่งสลิปให้ Admin</small>`
         : `<div class="qr-placeholder">
@@ -1705,7 +1718,7 @@ function renderDetail(t) {
 
   // ANIMATION 4: CTA button with id for pulse
   const ctaBtn = !visible
-    ? `<div class="alert alert-secondary small">🔒 ทริปนี้ปิดแล้ว</div>`
+    ? `<div class="alert alert-secondary small">🔒 ทริปนี้ปิดรับแล้ว</div>`
     : isFull
     ? `<div class="alert alert-warning small">⚠️ ทริปเต็มแล้ว (${cur}/${max} คน)</div>`
     : `<button class="btn btn-primary w-100 fw-600 py-2" id="mainRegBtn"
@@ -1801,7 +1814,7 @@ function renderDetail(t) {
           <div class="d-flex flex-wrap gap-2 mb-2" id="tripImgList">
             ${(t.images||[]).map(im=>`
               <div class="img-thumb-wrap">
-                <img src="${im.url}" class="img-thumb" onclick="openLb([\'${im.url}\'],0)">
+                <img src="${fixDriveUrl(im.url)}" class="img-thumb" onclick="openLb([\'${im.url}\'],0)">
                 <button class="img-del" onclick="doDeleteImg('${im.imageId}','${t.tripId}')">
                   <i class="bi bi-x"></i>
                 </button>
@@ -1818,7 +1831,7 @@ function renderDetail(t) {
       <div class="col-12 col-lg-4">
         <div class="detail-card">
           ${ctaBtn}
-          ${!isFull && visible ? `<p class="text-muted small text-center mt-2 mb-0">ถ้าไปก็ลงชื่อได้เลย</p>` : ''}
+          ${!isFull && visible ? `<p class="text-muted small text-center mt-2 mb-0">ถ้าไปก็ลงชื่อได้</p>` : ''}
           <hr style="margin:12px 0;border-color:var(--border)">
           <button class="btn btn-outline-secondary btn-sm w-100"
             onclick="copyTripLink('${t.tripId}','${t.title.replace(/'/g,"\\'")}',this)">
@@ -1887,12 +1900,12 @@ function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
   const priceStr = price > 0 ? `฿${Number(price).toLocaleString()}` : 'จ่ายเอง';
 
   const msg = [
-    '🧳 ชวนเที่ยว! ' + title,
+    '🧳 ' + title,
     '📅 ' + dateStr + (time ? ' เวลา ' + time : ''),
     '📍 ' + (location || 'TBA'),
     '💰 ' + priceStr,
     '',
-    '👇 ลงชื่อได้ที่นี่',
+    '👇 ถ้าไปลงชื่อที่นี่',
     url,
   ].join('\n');
 
@@ -1949,6 +1962,7 @@ async function toggleMembers(tripId) {
   icon.className = 'bi bi-eye-slash';
   txtEl.textContent = 'ซ่อนรายชื่อ';
 
+  showLoad(true, 'กำลังโหลดรายชื่อ...');
   list.innerHTML = `<div class="members-empty">
     <span style="font-size:1.6rem;display:block;animation:suitBounce 1.3s ease-in-out infinite;margin-bottom:4px">🧳</span>
     <div style="width:22px;height:4px;border-radius:50%;background:rgba(124,58,237,.2);animation:suitShadow 1.3s ease-in-out infinite;margin:0 auto 8px"></div>
@@ -1956,6 +1970,7 @@ async function toggleMembers(tripId) {
   </div>`;
 
   const r = await api('getTripMembers', { tripId });
+  showLoad(false);
   _membersLoaded[tripId] = true;
 
   if (!r.success || !r.members.length) {
@@ -2032,7 +2047,9 @@ async function openReg(tripId, title, hasCostHint) {
   // ถ้าไม่แน่ใจ hasCost ให้ดึงข้อมูลทริปมาเช็ค payQrUrl
   let hasCost = hasCostHint;
   if (hasCost === undefined || hasCost === null) {
+    showLoad(true, 'กำลังโหลด...');
     const r = await api('getTrip', { tripId });
+    showLoad(false);
     hasCost = r.success ? (Number(r.trip.price||0) > 0 && !!r.trip.payQrUrl) : false;
   }
   document.getElementById('regTripId').value      = tripId;
@@ -2152,10 +2169,10 @@ function openEditTrip(t) {
 
   if (t.mainImage) {
     document.getElementById('mainPreviewBox').innerHTML =
-      `<img src="${t.mainImage}" style="max-height:100px;border-radius:8px">`;
+      `<img src="${fixDriveUrl(t.mainImage)}" style="max-height:100px;border-radius:8px">`;
   }
   if (t.payQrUrl) {
-    document.getElementById('qrPreviewImg').src = t.payQrUrl;
+    document.getElementById('qrPreviewImg').src = fixDriveUrl(t.payQrUrl);
     document.getElementById('qrPreview').classList.remove('d-none');
   } else {
     document.getElementById('qrPreview').classList.add('d-none');
@@ -2281,10 +2298,10 @@ async function submitTripForm() {
 }
 
 async function doToggleVisible(tripId, checkboxEl) {
-  // ถ้าถูกเรียกจาก checkbox ให้ disable ก่อนป้องกัน double-fire
   if (checkboxEl) checkboxEl.disabled = true;
-
+  showLoad(true, 'กำลังบันทึก...');
   const r = await api('toggleVisible', { tripId });
+  showLoad(false);
   if (r.success) {
     toast(r.isVisible ? '👁️ เปิดแสดงทริปแล้ว' : '🔒 ซ่อนทริปแล้ว', 'info');
     // ถ้าอยู่หน้า detail — reload detail
@@ -2312,7 +2329,9 @@ async function doToggleVisible(tripId, checkboxEl) {
 
 async function doDeleteTrip(tripId) {
   if (!confirm('ยืนยันลบทริปนี้? ข้อมูลรายชื่อจะถูกลบด้วย')) return;
+  showLoad(true, 'กำลังลบทริป...');
   const r = await api('deleteTrip', { tripId });
+  showLoad(false);
   if (r.success) { toast('ลบทริปสำเร็จ', 'success'); showPage('trips'); loadHome(); }
 }
 
@@ -2334,7 +2353,9 @@ async function uploadMoreImgs(input, tripId) {
 
 async function doDeleteImg(imageId, tripId) {
   if (!confirm('ลบรูปนี้?')) return;
+  showLoad(true, 'กำลังลบรูป...');
   const r = await api('deleteTripImage', { imageId });
+  showLoad(false);
   if (r.success) { toast('ลบรูปสำเร็จ', 'success'); showDetail(tripId); }
 }
 
@@ -2355,6 +2376,9 @@ async function loadAdminPage() {
         <button class="aside-btn" id="aBtn-regs"  onclick="switchAdmin('regs',this)">
           <i class="bi bi-people-fill"></i> รายชื่อทั้งหมด
         </button>
+        <button class="aside-btn" id="aBtn-admins" onclick="switchAdmin('admins',this)">
+          <i class="bi bi-shield-lock-fill"></i> จัดการ Admin
+        </button>
       </div>
     </div>
     <div class="admin-body" id="adminBody">
@@ -2371,15 +2395,26 @@ async function loadAdminPage() {
 function switchAdmin(tab, btn) {
   document.querySelectorAll('.aside-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  // แสดง inline loading ใน adminBody ก่อนทุกครั้ง
+  const body = document.getElementById('adminBody');
+  if (body) body.innerHTML = `
+    <div class="text-center py-5">
+      <span style="font-size:2rem;display:block;animation:suitBounce 1.3s ease-in-out infinite">🧳</span>
+      <div style="width:26px;height:4px;border-radius:50%;background:rgba(124,58,237,.25);animation:suitShadow 1.3s ease-in-out infinite;margin:4px auto 8px"></div>
+      <div style="font-size:.8rem;color:var(--text-muted)">กำลังโหลด</div>
+    </div>`;
   switch(tab) {
-    case 'dash':  loadAdminDash();  break;
-    case 'trips': loadAdminTrips(); break;
-    case 'regs':  loadAdminAllRegs(); break;
+    case 'dash':   loadAdminDash();    break;
+    case 'trips':  loadAdminTrips();   break;
+    case 'regs':   loadAdminAllRegs(); break;
+    case 'admins': loadAdminAdmins();  break;
   }
 }
 
 async function loadAdminDash() {
+  showLoad(true, 'กำลังโหลด...');
   const [tr, sr] = await Promise.all([ api('getTrips',{}), api('getStats',{}) ]);
+  showLoad(false);
   const trips = tr.success ? tr.trips : [];
   const stats = sr.success ? sr.stats : {};
 
@@ -2466,7 +2501,9 @@ async function loadAdminDash() {
 }
 
 async function loadAdminTrips() {
+  showLoad(true, 'กำลังโหลด...');
   const r = await api('getTrips', {});
+  showLoad(false);
   const trips = r.success ? r.trips : [];
 
   document.getElementById('adminBody').innerHTML = `
@@ -2489,7 +2526,7 @@ async function loadAdminTrips() {
           const dateStr = t.date ? new Date(t.date).toLocaleDateString('th-TH',{month:'short',day:'numeric'}) : '-';
           return `
           <tr>
-            <td>${t.mainImage ? `<img src="${t.mainImage}">` : `<span style="font-size:1.8rem">${emoji}</span>`}</td>
+            <td>${t.mainImage ? `<img src="${fixDriveUrl(t.mainImage)}">` : `<span style="font-size:1.8rem">${emoji}</span>`}</td>
             <td><b>${t.title}</b></td>
             <td>${emoji} ${t.category||'-'}</td>
             <td>${dateStr}</td>
@@ -2551,7 +2588,7 @@ async function loadAdminAllRegs() {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
+            ? `<img src="${fixDriveUrl(r.slipUrl)}" class="slip-thumb" onclick="openLb([fixDriveUrl('${r.slipUrl}')],0)" title="ดูสลิป">`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
@@ -2600,7 +2637,7 @@ async function openAdminRegs(tripId, title) {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
+            ? `<img src="${fixDriveUrl(r.slipUrl)}" class="slip-thumb" onclick="openLb([fixDriveUrl('${r.slipUrl}')],0)" title="ดูสลิป">`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
@@ -2626,7 +2663,9 @@ async function openAdminRegs(tripId, title) {
 
 async function doDeleteReg(regId, name, tripId, tripTitle) {
   if (!confirm(`ลบ "${name}" ออกจากรายชื่อ?\nไม่สามารถย้อนกลับได้`)) return;
+  showLoad(true, 'กำลังลบ...');
   const r = await api('deleteRegistration', { regId });
+  showLoad(false);
   if (r.success) {
     toast(`ลบ ${name} สำเร็จ`, 'success');
     // refresh ตารางที่กำลังแสดงอยู่
@@ -2641,8 +2680,143 @@ async function doDeleteReg(regId, name, tripId, tripTitle) {
   }
 }
 
+// ─────────────────────────────────────────
+// ADMIN MANAGEMENT
+// ─────────────────────────────────────────
+async function loadAdminAdmins() {
+  showLoad(true, 'กำลังโหลด...');
+  const r = await api('getAdmins');
+  showLoad(false);
+
+  const admins = r.success ? r.admins : [];
+
+  document.getElementById('adminBody').innerHTML = `
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h4 class="fw-700 mb-0">🛡️ จัดการ Admin (${admins.length + 1} คน)</h4>
+  </div>
+
+  <!-- ฟอร์มเพิ่ม Admin ใหม่ -->
+  <div class="detail-card mb-4">
+    <h5><i class="bi bi-person-plus-fill text-primary"></i> เพิ่ม Admin ใหม่</h5>
+    <div class="row g-3">
+      <div class="col-12 col-md-4">
+        <label class="form-label">ชื่อ</label>
+        <input type="text" class="form-control" id="newAdminName" placeholder="ชื่อ Admin">
+      </div>
+      <div class="col-12 col-md-4">
+        <label class="form-label">อีเมล *</label>
+        <input type="email" class="form-control" id="newAdminEmail" placeholder="email@example.com">
+      </div>
+      <div class="col-12 col-md-4">
+        <label class="form-label">รหัสผ่าน *</label>
+        <div class="input-group">
+          <input type="password" class="form-control" id="newAdminPass" placeholder="รหัสผ่าน">
+          <button class="btn btn-outline-secondary" type="button"
+                  onclick="togglePassVis('newAdminPass',this)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col-12">
+        <div id="addAdminErr" class="alert alert-danger d-none small py-2"></div>
+        <button class="btn btn-primary fw-600" onclick="addAdminSubmit()">
+          <i class="bi bi-plus-lg"></i> เพิ่ม Admin
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- รายชื่อ Admin ปัจจุบัน -->
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr>
+        <th>ชื่อ</th><th>อีเมล</th><th>ประเภท</th><th>วันที่เพิ่ม</th><th></th>
+      </tr></thead>
+      <tbody>
+        <!-- Owner account (hardcode) -->
+        <tr>
+          <td><b>Owner</b></td>
+          <td>${ADMIN_EMAIL_DISPLAY}</td>
+          <td><span class="badge-open" style="background:#FEF3C7;color:#B45309">👑 Owner</span></td>
+          <td>-</td>
+          <td><span class="text-muted small">ลบไม่ได้</span></td>
+        </tr>
+        ${admins.map(a => `
+        <tr>
+          <td><b>${a.name || '-'}</b></td>
+          <td>${a.email}</td>
+          <td><span class="badge-open">🛡️ Admin</span></td>
+          <td>${(()=>{ try { const d=new Date(a.createdAt); return isNaN(d)?'-':d.toLocaleDateString('th-TH',{year:'numeric',month:'short',day:'numeric'}); } catch(e){return '-';} })()}</td>
+          <td>
+            <button class="btn btn-outline-danger btn-sm py-0 px-2"
+                    onclick="doDeleteAdmin('${a.adminId}','${a.name||a.email}')">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+// แสดงอีเมล owner โดยไม่ expose ตรงๆ
+const ADMIN_EMAIL_DISPLAY = API_URL ? '(Owner account)' : '-';
+
+async function addAdminSubmit() {
+  const name  = document.getElementById('newAdminName').value.trim();
+  const email = document.getElementById('newAdminEmail').value.trim();
+  const pass  = document.getElementById('newAdminPass').value;
+  const errEl = document.getElementById('addAdminErr');
+
+  errEl.classList.add('d-none');
+  if (!email || !pass) {
+    errEl.textContent = 'กรุณากรอกอีเมลและรหัสผ่าน';
+    errEl.classList.remove('d-none');
+    return;
+  }
+  if (pass.length < 6) {
+    errEl.textContent = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+    errEl.classList.remove('d-none');
+    return;
+  }
+
+  showLoad(true, 'กำลังเพิ่ม Admin...');
+  const r = await api('addAdmin', { name, email, password: pass });
+  showLoad(false);
+
+  if (r.success) {
+    toast('เพิ่ม Admin สำเร็จ ✅', 'success');
+    loadAdminAdmins();
+  } else {
+    errEl.textContent = r.message;
+    errEl.classList.remove('d-none');
+  }
+}
+
+async function doDeleteAdmin(adminId, name) {
+  if (!confirm(`ลบ Admin "${name}" ออก?\nคนนี้จะไม่สามารถเข้าสู่ระบบได้อีก`)) return;
+  showLoad(true, 'กำลังลบ Admin...');
+  const r = await api('deleteAdmin', { adminId });
+  showLoad(false);
+  if (r.success) {
+    toast(`ลบ Admin ${name} สำเร็จ`, 'success');
+    loadAdminAdmins();
+  } else {
+    toast('ลบไม่สำเร็จ', 'error');
+  }
+}
+
+function togglePassVis(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const isPass = input.type === 'password';
+  input.type = isPass ? 'text' : 'password';
+  btn.innerHTML = isPass ? '<i class="bi bi-eye-slash"></i>' : '<i class="bi bi-eye"></i>';
+}
+
 async function changePayStatus(regId, status) {
+  showLoad(true, 'กำลังบันทึก...');
   const r = await api('updatePayStatus', { regId, status });
+  showLoad(false);
   if (r.success) toast('อัปเดตสถานะแล้ว', 'success');
 }
 
@@ -2728,13 +2902,19 @@ function toast(msg, type = 'success') {
 }
 
 const LOAD_EMOJI = {
-  'กำลัง Login':     '🔑',
-  'กำลังลงชื่อ':     '✍️',
-  'กำลังบันทึก':     '💾',
-  'กำลังอัปโหลด':   '🖼️',
-  'โหลดรายชื่อ':     '👥',
-  'กำลังโหลดรายชื่อ':'👥',
-  'default':          '🧳',
+  'กำลัง Login':       '🔑',
+  'กำลังลงชื่อ':       '✍️',
+  'กำลังบันทึก':       '💾',
+  'กำลังอัปโหลด':     '🖼️',
+  'กำลังโหลดรายชื่อ': '👥',
+  'โหลดรายชื่อ':       '👥',
+  'กำลังโหลดทริป':    '🗺️',
+  'กำลังลบทริป':       '🗑️',
+  'กำลังลบรูป':        '🗑️',
+  'กำลังลบ Admin':     '🛡️',
+  'กำลังลบ':           '🗑️',
+  'กำลังเพิ่ม Admin':  '🛡️',
+  'default':            '🧳',
 };
 
 function showLoad(show, txt = 'กำลังโหลด') {
