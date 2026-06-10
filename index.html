@@ -886,8 +886,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
         <div class="hero-shape s3"></div>
       </div>
       <div class="container hero-content">
-        <div class="hero-eyebrow">✨ ชวนกันไปสนุก</div>
-        <h1 class="hero-title">ทริปสนุกจากกลุ่ม Winter Wonder!</h1>
+        <div class="hero-eyebrow">✨ ไปสนุกนำกันเด้อ!</div>
+        <h1 class="hero-title">ทริปจากกลุ่ม Winter Wonder!</h1>
         <p class="hero-sub">ถ้าไป กดลงชื่อ แล้วไปด้วยกัน</p>
         <div class="cat-pills">
           <button class="cat-pill active" onclick="filterHomeCat('')">🌟 ทั้งหมด</button>
@@ -1031,7 +1031,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
             <input type="text" class="form-control" id="regName" placeholder="ชื่อเล่นของคุณ">
           </div>
           <div class="mb-3">
-            <label class="form-label">อีเมล <span class="text-muted">(รับอีเมลยืนยัน)</span></label>
+            <label class="form-label">อีเมล <span class="text-muted">(รับอีเมลยืนยัน/ไม่บังคับ)</span></label>
             <input type="email" class="form-control" id="regEmail" placeholder="email@example.com">
           </div>
           <div class="mb-3">
@@ -1312,19 +1312,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ─────────────────────────────────────────
-// FIX GOOGLE DRIVE URL — แปลง thumbnail → uc export view
-// ─────────────────────────────────────────
-function fixDriveUrl(url) {
-  if (!url) return url;
-  // แปลง thumbnail?id=xxx&sz=s1000 → uc?export=view&id=xxx
-  const m = url.match(/[?&]id=([^&]+)/);
-  if (url.includes('drive.google.com/thumbnail') && m) {
-    return 'https://drive.google.com/uc?export=view&id=' + m[1];
-  }
-  return url;
-}
-
-// ─────────────────────────────────────────
 // API
 // ─────────────────────────────────────────
 async function api(action, data = {}) {
@@ -1542,7 +1529,7 @@ function tripCardHTML(t, idx = 0) {
     : '<span class="badge-open">🟢 เปิดรับ</span>';
 
   const img = t.mainImage
-    ? `<img class="trip-card-img" src="${fixDriveUrl(t.mainImage)}" alt="${t.title}" loading="lazy">`
+    ? `<img class="trip-card-img" src="${t.mainImage}" alt="${t.title}" loading="lazy">`
     : `<div class="trip-card-img-ph">${emoji}</div>`;
 
   const hasCostTrip = Number(t.price||0) > 0 && !!t.payQrUrl;
@@ -1640,7 +1627,7 @@ function renderDetail(t) {
   const isFull  = t.isFull;
   const pct     = max > 0 ? Math.min(100, Math.round(cur/max*100)) : 0;
 
-  const allImgs = [t.mainImage, ...(t.images||[]).map(i=>i.url)].filter(Boolean).map(fixDriveUrl);
+  const allImgs = [t.mainImage, ...(t.images||[]).map(i=>i.url)].filter(Boolean);
 
   // Gallery
   let gallery = '';
@@ -1689,7 +1676,7 @@ function renderDetail(t) {
     <h5><i class="bi bi-qr-code text-primary"></i> ชำระเงิน PromptPay</h5>
     <div class="qr-box">
       ${t.payQrUrl
-        ? `<img class="qr-img" src="${fixDriveUrl(t.payQrUrl)}" alt="QR PromptPay">
+        ? `<img class="qr-img" src="${t.payQrUrl}" alt="QR PromptPay">
            <p class="mt-2 small text-muted mb-0">สแกน QR Code เพื่อชำระเงิน ฿${Number(t.price).toLocaleString()}</p>
            <small class="text-muted">หลังโอนเงินกรุณาส่งสลิปให้ Admin</small>`
         : `<div class="qr-placeholder">
@@ -1718,7 +1705,7 @@ function renderDetail(t) {
 
   // ANIMATION 4: CTA button with id for pulse
   const ctaBtn = !visible
-    ? `<div class="alert alert-secondary small">🔒 ทริปนี้ปิดรับแล้ว</div>`
+    ? `<div class="alert alert-secondary small">🔒 ทริปนี้ปิดรับสมัครชั่วคราว</div>`
     : isFull
     ? `<div class="alert alert-warning small">⚠️ ทริปเต็มแล้ว (${cur}/${max} คน)</div>`
     : `<button class="btn btn-primary w-100 fw-600 py-2" id="mainRegBtn"
@@ -1814,7 +1801,7 @@ function renderDetail(t) {
           <div class="d-flex flex-wrap gap-2 mb-2" id="tripImgList">
             ${(t.images||[]).map(im=>`
               <div class="img-thumb-wrap">
-                <img src="${fixDriveUrl(im.url)}" class="img-thumb" onclick="openLb([\'${im.url}\'],0)">
+                <img src="${im.url}" class="img-thumb" onclick="openLb([\'${im.url}\'],0)">
                 <button class="img-del" onclick="doDeleteImg('${im.imageId}','${t.tripId}')">
                   <i class="bi bi-x"></i>
                 </button>
@@ -1831,7 +1818,7 @@ function renderDetail(t) {
       <div class="col-12 col-lg-4">
         <div class="detail-card">
           ${ctaBtn}
-          ${!isFull && visible ? `<p class="text-muted small text-center mt-2 mb-0">ถ้าไปก็ลงชื่อได้</p>` : ''}
+          ${!isFull && visible ? `<p class="text-muted small text-center mt-2 mb-0">ถ้าไปลงชื่อได้เลย</p>` : ''}
           <hr style="margin:12px 0;border-color:var(--border)">
           <button class="btn btn-outline-secondary btn-sm w-100"
             onclick="copyTripLink('${t.tripId}','${t.title.replace(/'/g,"\\'")}',this)">
@@ -2169,10 +2156,10 @@ function openEditTrip(t) {
 
   if (t.mainImage) {
     document.getElementById('mainPreviewBox').innerHTML =
-      `<img src="${fixDriveUrl(t.mainImage)}" style="max-height:100px;border-radius:8px">`;
+      `<img src="${t.mainImage}" style="max-height:100px;border-radius:8px">`;
   }
   if (t.payQrUrl) {
-    document.getElementById('qrPreviewImg').src = fixDriveUrl(t.payQrUrl);
+    document.getElementById('qrPreviewImg').src = t.payQrUrl;
     document.getElementById('qrPreview').classList.remove('d-none');
   } else {
     document.getElementById('qrPreview').classList.add('d-none');
@@ -2526,7 +2513,7 @@ async function loadAdminTrips() {
           const dateStr = t.date ? new Date(t.date).toLocaleDateString('th-TH',{month:'short',day:'numeric'}) : '-';
           return `
           <tr>
-            <td>${t.mainImage ? `<img src="${fixDriveUrl(t.mainImage)}">` : `<span style="font-size:1.8rem">${emoji}</span>`}</td>
+            <td>${t.mainImage ? `<img src="${t.mainImage}">` : `<span style="font-size:1.8rem">${emoji}</span>`}</td>
             <td><b>${t.title}</b></td>
             <td>${emoji} ${t.category||'-'}</td>
             <td>${dateStr}</td>
@@ -2588,7 +2575,7 @@ async function loadAdminAllRegs() {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${fixDriveUrl(r.slipUrl)}" class="slip-thumb" onclick="openLb([fixDriveUrl('${r.slipUrl}')],0)" title="ดูสลิป">`
+            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
@@ -2637,7 +2624,7 @@ async function openAdminRegs(tripId, title) {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${fixDriveUrl(r.slipUrl)}" class="slip-thumb" onclick="openLb([fixDriveUrl('${r.slipUrl}')],0)" title="ดูสลิป">`
+            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
