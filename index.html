@@ -1272,7 +1272,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
 // Trip Party - Frontend JS v3 + Animations
 // ============================================================
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbxEXmuV4LRQVkWPp6e6BALoVDkM09-IJPQGqOUc_-_-5jenwUSQjdKjQHipSs6InEtA/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
+const API_URL = 'https://script.google.com/macros/s/AKfycbxEXmuV4LRQVkWPp6e6BALoVDkM09-IJPQGqOUc_-_-5jenwUSQjdKjQHipSs6InEtA/exec
+'; // ← วาง URL ของ GAS Web App ตรงนี้
 
 // ── State ──
 let adminToken  = null;
@@ -1892,7 +1893,7 @@ function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
     '📍 ' + (location || 'TBA'),
     '💰 ' + priceStr,
     '',
-    '👇 ถ้าไปลงชื่อที่นี่',
+    '👇 ถ้าไปลงชื่อได้ที่นี่',
     url,
   ].join('\n');
 
@@ -2575,7 +2576,7 @@ async function loadAdminAllRegs() {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
+            ? `<img src="${r.slipUrl}" class="slip-thumb slip-clickable" data-url="${r.slipUrl}" title="ดูสลิป" style="cursor:pointer">`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
@@ -2624,7 +2625,7 @@ async function openAdminRegs(tripId, title) {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${r.slipUrl}" class="slip-thumb" onclick="openLb(['${r.slipUrl}'],0)" title="ดูสลิป">`
+            ? `<img src="${r.slipUrl}" class="slip-thumb slip-clickable" data-url="${r.slipUrl}" title="ดูสลิป" style="cursor:pointer">`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
@@ -2806,6 +2807,17 @@ async function changePayStatus(regId, status) {
   showLoad(false);
   if (r.success) toast('อัปเดตสถานะแล้ว', 'success');
 }
+
+// ─────────────────────────────────────────
+// SLIP THUMBNAIL — event delegation (หลีกเลี่ยง inline onclick กับ URL พิเศษ)
+// ─────────────────────────────────────────
+document.addEventListener('click', e => {
+  const thumb = e.target.closest('.slip-clickable');
+  if (thumb) {
+    const url = thumb.dataset.url;
+    if (url) openLb([url], 0);
+  }
+});
 
 // ─────────────────────────────────────────
 // LIGHTBOX
