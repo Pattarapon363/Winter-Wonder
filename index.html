@@ -886,7 +886,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
         <div class="hero-shape s3"></div>
       </div>
       <div class="container hero-content">
-        <div class="hero-eyebrow">✨ ไปสนุกนำกันเด้อ!</div>
+        <div class="hero-eyebrow">✨ ชวนกันไปสนุก</div>
         <h1 class="hero-title">ทริปจากกลุ่ม Winter Wonder!</h1>
         <p class="hero-sub">ถ้าไป กดลงชื่อ แล้วไปด้วยกัน</p>
         <div class="cat-pills">
@@ -1031,7 +1031,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
             <input type="text" class="form-control" id="regName" placeholder="ชื่อเล่นของคุณ">
           </div>
           <div class="mb-3">
-            <label class="form-label">อีเมล <span class="text-muted">(รับอีเมลยืนยัน/ไม่บังคับ)</span></label>
+            <label class="form-label">อีเมล <span class="text-muted">(รับอีเมลยืนยัน)</span></label>
             <input type="email" class="form-control" id="regEmail" placeholder="email@example.com">
           </div>
           <div class="mb-3">
@@ -1272,7 +1272,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);margin:0;tra
 // Trip Party - Frontend JS v3 + Animations
 // ============================================================
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbz5muwF4HCL1BEtL6Fji3jK-V8VotpXcm9gTV1UUJCqiHkSUYRMzGy8EOj8ulVPAYzK/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
+const API_URL = 'https://script.google.com/macros/s/AKfycbxEXmuV4LRQVkWPp6e6BALoVDkM09-IJPQGqOUc_-_-5jenwUSQjdKjQHipSs6InEtA/exec'; // ← วาง URL ของ GAS Web App ตรงนี้
 
 // ── State ──
 let adminToken  = null;
@@ -2078,7 +2078,7 @@ async function submitReg() {
   let slipUrl = '';
   if (hasCost && slipFileObj) {
     showLoad(true, 'กำลังอัปโหลดสลิป...');
-    const ur = await uploadFile(slipFileObj);
+    const ur = await uploadFile(slipFileObj, true); // true = isSlip
     if (ur.success) slipUrl = ur.url;
   }
 
@@ -2833,12 +2833,13 @@ function updateLb() {
 // ─────────────────────────────────────────
 // UPLOAD
 // ─────────────────────────────────────────
-async function uploadFile(file) {
+async function uploadFile(file, isSlip = false) {
   return new Promise(resolve => {
     const r = new FileReader();
     r.onload = async e => {
-      const b64 = e.target.result.split(',')[1];
-      const res = await api('uploadImage', { base64:b64, mimeType:file.type, filename:file.name });
+      const b64    = e.target.result.split(',')[1];
+      const action = isSlip ? 'uploadSlip' : 'uploadImage';
+      const res    = await api(action, { base64: b64, mimeType: file.type, filename: file.name });
       resolve(res);
     };
     r.readAsDataURL(file);
