@@ -1892,7 +1892,7 @@ function copyTripMsg(tripId, title, date, location, time, price, btnEl) {
     '📍 ' + (location || 'TBA'),
     '💰 ' + priceStr,
     '',
-    '👇 ถ้าไปลงชื่อได้ที่นี่',
+    '👇 ถ้าไปก็ลงชื่อได้ที่นี่',
     url,
   ].join('\n');
 
@@ -2575,7 +2575,15 @@ async function loadAdminAllRegs() {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${r.slipUrl}" class="slip-thumb slip-clickable" data-url="${r.slipUrl}" title="ดูสลิป" style="cursor:pointer">`
+            ? `<div style="display:inline-block">
+                <img src="${r.slipUrl}" class="slip-thumb" style="cursor:pointer"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"
+                     onclick="viewSlip('${r.slipUrl}')">
+                <button class="btn btn-outline-primary btn-sm" style="display:none"
+                        onclick="viewSlip('${r.slipUrl}')">
+                  <i class="bi bi-eye"></i> ดูสลิป
+                </button>
+              </div>`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
@@ -2624,7 +2632,15 @@ async function openAdminRegs(tripId, title) {
           <td>${r.phone||'-'}</td>
           <td>${r.note||'-'}</td>
           <td>${r.slipUrl
-            ? `<img src="${r.slipUrl}" class="slip-thumb slip-clickable" data-url="${r.slipUrl}" title="ดูสลิป" style="cursor:pointer">`
+            ? `<div style="display:inline-block">
+                <img src="${r.slipUrl}" class="slip-thumb" style="cursor:pointer"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'"
+                     onclick="viewSlip('${r.slipUrl}')">
+                <button class="btn btn-outline-primary btn-sm" style="display:none"
+                        onclick="viewSlip('${r.slipUrl}')">
+                  <i class="bi bi-eye"></i> ดูสลิป
+                </button>
+              </div>`
             : '<span class="text-muted small">-</span>'}</td>
           <td>
             <select class="form-select form-select-sm" style="width:130px"
@@ -2807,8 +2823,14 @@ async function changePayStatus(regId, status) {
   if (r.success) toast('อัปเดตสถานะแล้ว', 'success');
 }
 
+// เปิดสลิปในแท็บใหม่ (ง่ายและมั่นใจว่าทำงานได้)
+function viewSlip(url) {
+  if (!url) return;
+  window.open(url, '_blank');
+}
+
 // ─────────────────────────────────────────
-// SLIP THUMBNAIL — event delegation (หลีกเลี่ยง inline onclick กับ URL พิเศษ)
+// SLIP THUMBNAIL — event delegation
 // ─────────────────────────────────────────
 document.addEventListener('click', e => {
   const thumb = e.target.closest('.slip-clickable');
